@@ -1,0 +1,54 @@
+import React, { useEffect } from 'react';
+import Sidebar from '../components/sidebar/sidebar';
+import style from './styles/layout.module.css'
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Homepage from './homepage/homepage';
+import Packages from './packages/packages';
+import { connect } from 'react-redux';
+import { setPackageDetail } from '../store/actions'
+
+let DashboardLayout = ({ setPackageDetail }) => {
+    let fetchPackagesData = async () => {
+        try {
+            let res = await fetch('http://localhost:4545/api/v1/packages/getAllPackages')
+            let data = await res.json()
+            return data
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        fetchPackagesData().then(res => {
+            setPackageDetail(res)
+        })
+    }, [setPackageDetail])
+
+    return (
+        <div className={style.layout}>
+            <BrowserRouter>
+                <Sidebar />
+                <Switch>
+                    <Route exact path='/admin' component={Homepage} />
+                    <Route exact path='/admin/packages' component={Packages} />
+                </Switch>
+            </BrowserRouter>
+        </div>
+    )
+}
+
+function mapProp(state) {
+    return {
+
+    }
+}
+
+function mapActions(dispatch) {
+    return {
+        setPackageDetail(details) {
+            dispatch(setPackageDetail(details))
+        }
+    }
+}
+
+export default connect(mapProp, mapActions)(DashboardLayout);
