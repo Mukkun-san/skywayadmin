@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import SideSlide from "../sideslide/sideslide";
 import RichEditor from "./RichEditor/richeditor";
 import ImageUploader from "react-images-upload";
@@ -7,12 +8,38 @@ import Include from "./include/include";
 import Exclude from "./exclude/exclude";
 import Itinerary from "./itinerary/itinerary";
 import Hotels from "./hotels/hotels";
+import { addPackage } from '../../store/actions'
+import axios from 'axios'
 
-const AddPackage = ({ show, hideFun, title }) => {
+const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
     // let [data, setData] = useState([])
 
-    const [packageName, setPackageName] = useState([]);
+    function submitDetails() {
+        addPackage({ name: packageName, galleryImagesUrls: pictures[0], })
+
+        function imgUpload() {
+            var formData = new FormData();
+            pictures[0].forEach(img => {
+                formData.append("images", img);
+
+            });
+
+            axios.post('http://localhost:4545/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then((res) => {
+                console.log(res);
+            }
+            ).catch((err) => {
+                console.log(err)
+            }
+            )
+        }
+    }
+
+    const [packageName, setPackageName] = useState('');
     const [pictures, setPictures] = useState([]);
 
     const onDrop = (picture) => {
@@ -59,7 +86,10 @@ const AddPackage = ({ show, hideFun, title }) => {
 
                 }} />
 
-                <button className={'btn btn-primary mt-3'}>
+                <button className={'btn btn-primary mt-3'} onClick={(e) => {
+                    submitDetails();
+                }
+                }>
                     Submit
                 </button>
 
@@ -72,4 +102,18 @@ const AddPackage = ({ show, hideFun, title }) => {
     );
 };
 
-export default AddPackage;
+function mapProp(state) {
+    return {
+        tempPackage: state.tempPackage,
+    };
+}
+
+function mapActions(dispatch) {
+    return {
+        addPackage(details) {
+            dispatch(addPackage(details))
+        }
+    }
+}
+
+export default connect(mapProp, mapActions)(AddPackage);

@@ -1,4 +1,4 @@
-import { AUTH_STATE, ALL_PACKAGE_DETAIL } from "./constants";
+import { AUTH_STATE, ALL_PACKAGE_DETAIL, ADD_PACKAGE, DELETE_PACKAGE } from "./constants";
 
 export let setAuthState = (payload) => {
     return {
@@ -14,16 +14,16 @@ export let setPackageDetail = (payload) => {
     }
 }
 
-export let tempPackageDetail = (payload) => {
+export let addPackage = (payload) => {
     return {
-        type: "tempPackageDetail",
+        type: ADD_PACKAGE,
         payload
     }
 }
 
 export let deletePackage = (payload) => {
     return {
-        type: "DELETE_PACKAGE",
+        type: DELETE_PACKAGE,
         payload
     }
 }
