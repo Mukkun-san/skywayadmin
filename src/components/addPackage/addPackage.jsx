@@ -16,8 +16,6 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
     // let [data, setData] = useState([])
 
     function submitDetails() {
-        addPackage({ name: packageName, galleryImagesUrls: pictures[0], })
-
         function imgUpload() {
             var formData = new FormData();
             pictures[0].forEach(img => {

@@ -1,6 +1,4 @@
-import reducerFunction from './reducer'
+import reducer from './reducers/index'
 import { createStore } from 'redux'
 
-
-
-export default createStore(reducerFunction)
+export default createStore(reducer)

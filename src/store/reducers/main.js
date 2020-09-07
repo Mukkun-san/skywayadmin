@@ -1,4 +1,4 @@
-const { AUTH_STATE, ALL_PACKAGE_DETAIL, ADD_PACKAGE, DELETE_PACKAGE } = require("./constants");
+const { AUTH_STATE, ALL_PACKAGE_DETAIL, ADD_PACKAGE, DELETE_PACKAGE } = require("../constants");
 
 let intitialState = {
     authState: false,
@@ -6,7 +6,7 @@ let intitialState = {
     tempPackage: null,
 }
 
-let reducerFunction = (state = intitialState, action) => {
+let main = (state = intitialState, action) => {
     switch (action.type) {
         case AUTH_STATE:
             return {
@@ -25,7 +25,7 @@ let reducerFunction = (state = intitialState, action) => {
             console.log(ADD_PACKAGE, action.payload);
             return {
                 ...state,
-                tempPackage: action.payload
+                tempPackage: { name: action.payload }
             }
 
         case DELETE_PACKAGE:
@@ -45,4 +45,4 @@ let reducerFunction = (state = intitialState, action) => {
     }
 }
 
-export default reducerFunction
+export default main

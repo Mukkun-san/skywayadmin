@@ -84,7 +84,7 @@ const Packages = ({ packageDetail, deletePackage }) => {
 
 function mapProp(state) {
     return {
-        packageDetail: state.packageDetail,
+        packageDetail: state.main.packageDetail,
     };
 }
 
