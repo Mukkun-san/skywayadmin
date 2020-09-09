@@ -4,7 +4,7 @@ import style from "./sideslide.module.css";
 let closeImg = require("../../assets/close.svg");
 
 const SideSlide = ({ children, show, hideFun, title }) => {
-    return show == true ? (
+    return show === true ? (
         <div hidden={!show} className={style.sideslide}>
             <div className={style.content}>
                 <div

@@ -1,20 +1,29 @@
-import React, {useEffect, useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import RichEditor from "../RichEditor/richeditor";
-var HtmlToReactParser = require('html-to-react').Parser;
-var htmlToReactParser = new HtmlToReactParser();
+import parseHTML from 'html-react-parser';
 
-let Itinerary = () => {
+let Itinerary = (props) => {
 
-    let [itineraryList , setItineraryList] = useState([])
+    const [itineraryList, setItineraryList] = useState([])
 
-    let [itineraryDetails , setItineraryDetail ] = useState({
-        day : '',
-        place : '',
-        description : ''
-    })
+    const [itineraryDetails, setItineraryDetails] = useState({})
+
+    const [state, setState] = useState('-')
+
+    useEffect(() => {
+        console.log(itineraryDetails)
+        setItineraryDetails({
+            ...itineraryDetails,
+            description: state
+        })
+    }, [state])
+
+    useEffect(() => {
+        props.onChange(itineraryList)
+    }, [itineraryList])
 
     return (
-        <div className={'container'} style={{ marginTop : '50px'}}>
+        <div className={'container'} style={{ marginTop: '50px' }}>
             <h2>Itinerary</h2>
             <div className="row">
                 <div className="col-md-6">
@@ -23,11 +32,11 @@ let Itinerary = () => {
                             Day Number
                         </div>
                         <input type="number" min={1} onChange={event => {
-                            setItineraryDetail({
+                            setItineraryDetails({
                                 ...itineraryDetails,
-                                day : "Day " + event.target.value
+                                day: event.target.value
                             })
-                        }} className="form-control"/>
+                        }} className="form-control" />
                     </div>
                 </div>
                 <div className="col-md-6">
@@ -36,11 +45,11 @@ let Itinerary = () => {
                             Place
                         </div>
                         <input onChange={(event) => {
-                            setItineraryDetail({
+                            setItineraryDetails({
                                 ...itineraryDetails,
-                                place : event.target.value
+                                place: event.target.value
                             })
-                        }} type="text" className="form-control"/>
+                        }} type="text" className="form-control" />
                     </div>
                 </div>
             </div>
@@ -49,17 +58,16 @@ let Itinerary = () => {
                     <div className="form-group">
                         <div className="form-label">
                             Description
+                            <RichEditor
+                                onChange={(desc) => {
+                                    setState(desc)
+                                }}
+                            />
                         </div>
-                       <RichEditor onChange={(html) => {
-                            setItineraryDetail({
-                                ...itineraryDetails,
-                                description : html
-                            })
-                       }}/>
                     </div>
                 </div>
             </div>
-            <button onClick={() => {
+            <button type="button" onClick={() => {
                 setItineraryList([
                     ...itineraryList,
                     itineraryDetails
@@ -70,25 +78,28 @@ let Itinerary = () => {
 
             {itineraryList.length !== 0 ? (
                 <>
-                    {itineraryList.map((itinerary , index) => {
+                    {itineraryList.map((itinerary, index) => {
                         return (
-                            <div className={'card'}>
+                            <div className={'card'} key={index}>
                                 <div className="card-body">
                                     <div className="row">
-                                        <div className="col-1">
-                                            <b>{itinerary.day}</b>
-                                        </div>
-                                        <div className="col-9">
-                                            <b>{itinerary.place}</b> <br/>
-                                            <p>
-                                                {htmlToReactParser.parse(itinerary.description)}
-                                            </p>
+                                        <div className="col-10">
+                                            <div className="">
+                                                <p>Day: <b>{itinerary.day}</b></p>
+                                            </div>
+                                            <div className="">
+                                                <p>Place: <b>{itinerary.place}</b></p>
+                                            </div>
+                                            <div>
+                                                Description:
+                                                {parseHTML(itinerary.description)}
+                                            </div>
                                         </div>
                                         <div className="col-2">
-                                            <button onClick={() => {
+                                            <button type="button" onClick={() => {
                                                 let res = []
-                                                for(let i = 0 ; i < itineraryList.length ; i ++){
-                                                    if(i !== index){
+                                                for (let i = 0; i < itineraryList.length; i++) {
+                                                    if (i !== index) {
                                                         res.push(itineraryList[i])
                                                     }
                                                 }
@@ -107,4 +118,4 @@ let Itinerary = () => {
     )
 }
 
-export default  Itinerary;
+export default Itinerary;

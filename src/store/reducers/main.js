@@ -3,7 +3,6 @@ const { AUTH_STATE, ALL_PACKAGE_DETAIL, ADD_PACKAGE, DELETE_PACKAGE } = require(
 let intitialState = {
     authState: false,
     packageDetail: null,
-    tempPackage: null,
 }
 
 let main = (state = intitialState, action) => {
@@ -15,17 +14,17 @@ let main = (state = intitialState, action) => {
             }
 
         case ALL_PACKAGE_DETAIL:
-            console.log("allpkgdetails", { ...state });
             return {
                 ...state,
                 packageDetail: action.payload
             }
 
         case ADD_PACKAGE:
-            console.log(ADD_PACKAGE, action.payload);
+            let packageDetail = state.packageDetail;
+            packageDetail.push(action.payload)
             return {
                 ...state,
-                tempPackage: { name: action.payload }
+                packageDetail
             }
 
         case DELETE_PACKAGE:

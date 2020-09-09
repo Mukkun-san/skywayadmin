@@ -111,7 +111,7 @@ const AddPricing = (props) => {
                         </div>
                         <div className="col">
                             <div className="form-group">
-                                <div className="form-label">Standard Cost</div>
+                                <div className="form-label">Deluxe Cost</div>
                                 <input
                                     onChange={(event) =>
                                         setDeCost(event.target.value)
@@ -127,7 +127,7 @@ const AddPricing = (props) => {
                         </div>
                         <div className="col">
                             <div className="form-group">
-                                <div className="form-label">Standard Cost</div>
+                                <div className="form-label">Luxury Cost</div>
                                 <input
                                     onChange={(event) =>
                                         setLuCost(event.target.value)

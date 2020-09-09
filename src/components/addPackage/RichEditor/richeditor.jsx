@@ -3,7 +3,6 @@ import Draft from "draft-js";
 import 'draft-js/dist/Draft.css';
 import './richeditor.css'
 import draftToHtml from 'draftjs-to-html';
-import store from '../../../store/index';
 
 const { Editor, EditorState, RichUtils, convertToRaw } = Draft;
 
@@ -18,8 +17,9 @@ class RichEditor extends React.Component {
             const markup = draftToHtml(
                 rawContentState
             );
-            store.dispatch({ type: "ADD_overview", payload: markup })
-            this.setState({ editorState })
+            this.setState({ editorState }, () => {
+                props.onChange(markup)
+            })
         };
 
         this.handleKeyCommand = (command) => this._handleKeyCommand(command);
