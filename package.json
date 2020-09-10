@@ -2,7 +2,6 @@
     "name": "skyway_admin",
     "version": "0.1.0",
     "private": true,
-    "homepage": "http://localhost:5432/admin",
     "dependencies": {
         "@reduxjs/toolkit": "^1.4.0",
         "@testing-library/jest-dom": "^4.2.4",
