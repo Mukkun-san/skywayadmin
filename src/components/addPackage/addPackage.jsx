@@ -40,7 +40,8 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
     const [pictures, setPictures] = useState([]);
 
-    async function submitDetails() {
+    async function submitDetails(e) {
+        e.preventDefault();
         if (validatePackage(packageDetails, pictures).valid) {
 
             let Data = new FormData();
@@ -48,7 +49,7 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
                 Data.append("images", img);
             });
             Data.append("packageDetails", JSON.stringify(packageDetails))
-            const newPkg = await axios.post('/api/v1/packages/addPackage', Data)
+            const newPkg = await axios.post('http://localhost:4545/api/v1/packages/addPackage', Data)
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result })
         }
@@ -65,7 +66,7 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
     return (
         <SideSlide show={show} hideFun={hideFun} title={title} onSubmit={(e) => {
             e.preventDefault();
-            submitDetails();
+            submitDetails(e);
         }}>
             <form
                 style={{ padding: "30px", height: "90%", overflow: 'scroll', backgroundColor: '#fafafa' }}

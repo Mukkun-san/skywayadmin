@@ -36,7 +36,7 @@ let Auth = ({ children, authState, setAuthState }) => {
             setAuthState(false)
         }
 
-    }, [setAuthState])
+    }, [])
 
     if (authState !== true) {
         return (

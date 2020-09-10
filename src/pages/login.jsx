@@ -8,7 +8,7 @@ import Alert from "../components/alert/alert";
 //Images
 let loginImage = require("../assets/login_image.jpg");
 
-let Login = () => {
+let Login = ({ authState, setAuthState }) => {
 
     //States
     let [emailId, setEmailId] = useState("");
@@ -36,8 +36,11 @@ let Login = () => {
                     },
                 }
             );
+            console.log("res:", res)
 
             let data = await res.json();
+
+            console.log("data:", data);
 
             //If authentication is successful
             if (data.result === true) {
@@ -48,15 +51,15 @@ let Login = () => {
                 } else {
                     setAuthState(true);
                 }
-                window.location.reload()
-            }else{
+                //window.location.reload()
+            } else {
                 setAlert({
-                    show : true,
-                    msg : "Please provide correct email and password."
+                    show: true,
+                    msg: "Please provide correct email and password."
                 })
             }
 
-            
+
         } catch (err) {
             console.log(err);
         }
@@ -131,7 +134,7 @@ let Login = () => {
 
 function mapProps(state) {
     return {
-        authState: state.authState,
+        authState: state.main.authState,
     };
 }
 
