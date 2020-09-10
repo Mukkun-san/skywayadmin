@@ -15,6 +15,12 @@ const Category = (props) => {
 
     const renderSubCategories1 = (categ) => {
         setCategory(categ);
+        setSubCategory1('')
+        setSubCategories1(null);
+        setSubCategory2('')
+        setSubCategories2(null);
+        setSubCategory3('')
+        setSubCategories3(null);
         switch (categ) {
             case "HOLIDAYS":
                 setSubCategories1([
@@ -43,18 +49,16 @@ const Category = (props) => {
                 ]);
                 break;
             default:
-                setSubCategory1(null)
-                setSubCategories1(null);
-                setSubCategory2(null)
-                setSubCategories2(null);
-                setSubCategory3(null)
-                setSubCategories3(null);
                 break;
         }
     }
 
     const renderSubCategories2 = (categ) => {
         setSubCategory1(categ);
+        setSubCategory2('')
+        setSubCategories2(null);
+        setSubCategory3('')
+        setSubCategories3(null);
         switch (categ) {
             case "India Tours for Indian tourists to travel within India":
                 setSubCategories2([
@@ -91,16 +95,15 @@ const Category = (props) => {
                 ]);
                 break;
             default:
-                setSubCategory2(null)
-                setSubCategories2(null);
-                setSubCategory3(null)
-                setSubCategories3(null);
+
                 break;
         }
     }
 
     const renderSubCategories3 = (categ) => {
         setSubCategory2(categ);
+        setSubCategory3('')
+        setSubCategories3(null);
         switch (categ) {
             case "Asia":
                 setSubCategories3([
@@ -126,8 +129,6 @@ const Category = (props) => {
                 ])
                 break;
             default:
-                setSubCategory3(null)
-                setSubCategories3(null);
                 break;
         }
 
@@ -136,7 +137,7 @@ const Category = (props) => {
     return (
         <div className="form-group">
             <h4>Category</h4>
-            <select required className="custom-select my-2" value={category}
+            <select required={false} className="custom-select my-2" value={category}
                 onChange={e => { renderSubCategories1(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                 <option value="" disabled
                 ></option>
@@ -150,33 +151,33 @@ const Category = (props) => {
             </select>
 
             {subCategories1 ?
-                <select required className="custom-select my-2" value={subCategory1}
+                <select required={false} className="custom-select my-2" value={subCategory1}
                     onChange={e => { renderSubCategories2(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                     <option value="" disabled></option>
                     {subCategories1.map((subCateg, i) =>
-                        <option value={subCateg} key={i}>{subCateg}</option>
+                        <option value={subCateg} key={"subcateg" + i}>{subCateg}</option>
                     )}
                 </select>
                 : ""
             }
 
             {subCategories2 ?
-                <select required className="custom-select my-2" value={subCategory2}
+                <select required={false} className="custom-select my-2" value={subCategory2}
                     onChange={e => { renderSubCategories3(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                     <option value="" disabled></option>
                     {subCategories2.map((subCateg, i) =>
-                        <option value={subCateg} key={i}>{subCateg}</option>
+                        <option value={subCateg} key={"subCateg2" + i}>{subCateg}</option>
                     )}
                 </select>
                 : ""
             }
 
             {subCategories3 ?
-                <select required className="custom-select my-2" value={subCategory3}
+                <select required={false} className="custom-select my-2" value={subCategory3}
                     onChange={e => { setSubCategory3(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                     <option value="" disabled></option>
                     {subCategories3.map((subCateg, i) =>
-                        <option value={subCateg} key={i}>{subCateg}</option>
+                        <option value={subCateg} key={"subCateg3" + i}>{subCateg}</option>
                     )}
                 </select>
                 : ""

@@ -11,12 +11,14 @@ const Places = (props) => {
     return (
         <div>
             <div className="py-2">
-                <h4>Places Covered</h4>
-                {places.length > 0 ?
-                    places.map((place, i) =>
-                        <p className='d-inline pr-2' key={i}> {place} </p>
-                    ) : ""
-                }
+                <h3>Places Covered</h3>
+                <div className="pl-4">
+                    {places.length > 0 ?
+                        places.map((place, i) =>
+                            <h6 className='d-inline pr-2' key={"place" + i}> {i + 1 === places.length ? place : place + "  -"} </h6>
+                        ) : ""
+                    }
+                </div>
             </div>
             <input type="text" className={"form-control"} value={place} onChange={e => { setPlace(e.target.value); }} />
             <button className='mt-3 mb-5 btn btn-primary' type="button"

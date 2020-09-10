@@ -8,16 +8,6 @@ let Itinerary = (props) => {
 
     const [itineraryDetails, setItineraryDetails] = useState({})
 
-    const [state, setState] = useState('-')
-
-    useEffect(() => {
-        console.log(itineraryDetails)
-        setItineraryDetails({
-            ...itineraryDetails,
-            description: state
-        })
-    }, [state])
-
     useEffect(() => {
         props.onChange(itineraryList)
     }, [itineraryList])
@@ -60,7 +50,11 @@ let Itinerary = (props) => {
                             Description
                             <RichEditor
                                 onChange={(desc) => {
-                                    setState(desc)
+                                    console.log(itineraryDetails)
+                                    setItineraryDetails({
+                                        ...itineraryDetails,
+                                        description: desc
+                                    })
                                 }}
                             />
                         </div>
@@ -80,7 +74,7 @@ let Itinerary = (props) => {
                 <>
                     {itineraryList.map((itinerary, index) => {
                         return (
-                            <div className={'card'} key={index}>
+                            <div className={'card'} key={"itinerary" + index}>
                                 <div className="card-body">
                                     <div className="row">
                                         <div className="col-10">

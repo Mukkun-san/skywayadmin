@@ -13,11 +13,11 @@ import Places from "./places/addPlaces";
 import { addPackage } from '../../store/actions'
 import axios from 'axios'
 import store from '../../store/index'
+import validatePackage from './validate';
 
 const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
-    const [data, setData] = useState({
-        _id: '',
+    const emptyPackageDetails = {
         category: [],
         includeExclude: {
             include: [],
@@ -28,45 +28,37 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
         itinerary: [],
         hotels: [],
         places: [],
-        duration: "",
-        bannerImageUrl: "",
-        overview: "",
-        packageName: "",
+        duration: '',
+        bannerImageUrl: '',
+        overview: '',
+        packageName: '',
         description: '',
         termsAndConditions: ''
-    })
+    }
+
+    const [packageDetails, setPackageDetails] = useState(emptyPackageDetails)
 
     const [pictures, setPictures] = useState([]);
 
-    const [duration, setDuration] = useState('')
+    async function submitDetails() {
+        if (validatePackage(packageDetails, pictures).valid) {
 
-    const onDrop = (picture) => {
-        setPictures([...pictures, picture]);
-        setData({ ...data, galleryImagesUrls: pictures })
-    };
-
-    function submitDetails(e) {
-        console.log(data);
-        e.preventDefault();
-        store.dispatch({ type: "ADD_PACKAGE", payload: data })
-        function imgUpload() {
-            var formData = new FormData();
-            pictures[0].forEach(img => {
-                formData.append("images", img);
-
+            let Data = new FormData();
+            pictures.forEach(img => {
+                Data.append("images", img);
             });
+            Data.append("packageDetails", JSON.stringify(packageDetails))
+            const newPkg = await axios.post('/api/v1/packages/addPackage', Data)
+            console.log(newPkg);
+            store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result })
+        }
+        else {
+            let errors = '';
+            validatePackage(packageDetails, pictures).errors.forEach(err => {
+                errors += err + '\n';
+            });
+            alert(errors);
 
-            axios.post('http://localhost:4545/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then((res) => {
-                console.log(res);
-            }
-            ).catch((err) => {
-                console.log(err)
-            }
-            )
         }
     }
 
@@ -82,24 +74,24 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
                 <div className="form-group">
                     <h4 className="form-label">Package Name</h4>
-                    <input required type="text" className={"form-control"} value={data.packageName}
-                        onChange={e => { setData({ ...data, packageName: e.target.value }); }} />
+                    <input required={false} type="text" className={"form-control"} value={packageDetails.packageName}
+                        onChange={e => { setPackageDetails({ ...packageDetails, packageName: e.target.value }); }} />
                 </div>
 
-                <Category onChange={(categ) => { setData({ ...data, category: categ }) }} />
+                <Category onChange={(val) => { setPackageDetails({ ...packageDetails, category: val }) }} />
 
-                <Places onChange={(places) => { setData({ ...data, places: places }) }} />
+                <Places onChange={(val) => { setPackageDetails({ ...packageDetails, places: val }) }} />
 
                 <div className="form-group">
                     <h4>Duration</h4>
-                    <input required type="text" className={"form-control"} value={duration}
-                        onChange={e => { setDuration(e.target.value); }} />
+                    <input required={false} type="text" className={"form-control"} value={packageDetails.duration}
+                        onChange={e => { setPackageDetails({ ...packageDetails, duration: e.target.value }); }} />
                 </div>
 
                 <div className="form-group">
                     <h4 className="form-label">Overview</h4>
                     <RichEditor
-                        onChange={(val) => { setData({ ...data, overview: val }) }}
+                        onChange={(val) => { setPackageDetails({ ...packageDetails, overview: val }) }}
                     />
                 </div>
 
@@ -108,25 +100,25 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
                     <ImageUploader
                         withPreview={true}
                         withIcon={true}
-                        onChange={onDrop}
-                        imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-                        maxFileSize={5242880}
+                        onChange={(pictures) => { setPictures(pictures); }}
+                        imgExtension={[".jpg", ".jpeg", ".png", ".gif"]}
+                        maxFileSize={7242880}
                     />
                 </div>
 
-                <AddPricing />
-                <Include />
-                <Exclude />
-                <Itinerary onChange={(val) => { setData({ ...data, itinerary: val }) }} />
-                <Hotels />
+                <AddPricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
+                <Include onChange={(val) => { setPackageDetails({ ...packageDetails, includeExclude: { ...packageDetails.includeExclude, include: val } }) }} />
+                <Exclude onChange={(val) => { setPackageDetails({ ...packageDetails, includeExclude: { ...packageDetails.includeExclude, exclude: val } }) }} />
+                <Itinerary onChange={(val) => { setPackageDetails({ ...packageDetails, itinerary: val }) }} />
+                <Hotels onChange={(val) => { setPackageDetails({ ...packageDetails, hotels: val }) }} />
                 <br />
                 <h2>Terms and condition</h2>
                 <RichEditor
-                    onChange={(terms) => { setData({ ...data, termsAndConditions: terms }) }} />
+                    onChange={(val) => { setPackageDetails({ ...packageDetails, termsAndConditions: val }) }} />
                 <br />
                 <h2>Description</h2>
                 <RichEditor
-                    onChange={(desc) => { setData({ ...data, description: desc }) }}
+                    onChange={(val) => { setPackageDetails({ ...packageDetails, description: val }) }}
                 />
 
                 <button className={'btn btn-primary mt-3'} type="submit">

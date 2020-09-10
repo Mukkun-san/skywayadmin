@@ -1,25 +1,29 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from "../../table/table";
 
-let Exclude = () => {
+let Exclude = (props) => {
 
-    let [excludes , setExcludes] = useState([])
-    let [excludeTxt , setExcludeTxt] = useState('')
+    let [excludes, setExcludes] = useState([])
+    let [excludeTxt, setExcludeTxt] = useState('')
+
+    useEffect(() => {
+        props.onChange(excludes);
+    }, [excludes])
 
     return (
-        <div className={'container'} style={{marginTop : '30px'}}>
+        <div className={'container'} style={{ marginTop: '30px' }}>
             <h3>
                 Excludes
             </h3>
             <div className="form-group">
                 <div className="form-label">
-                    Include
+                    Excludes
                 </div>
                 <input onChange={(event) => {
                     setExcludeTxt(event.target.value)
-                }} type="text" className="form-control"/>
+                }} type="text" className="form-control" />
             </div>
-            <button onClick={() => {
+            <button type="button" onClick={() => {
                 setExcludes([
                     ...excludes,
                     excludeTxt
@@ -30,24 +34,24 @@ let Exclude = () => {
             {excludes.length !== 0 ? (
                 <Table>
                     <thead>
-                    <tr>
+                        <tr>
 
-                        <th>
-                            Includes
+                            <th>
+                                Excludes
                         </th>
-                    </tr>
+                        </tr>
                     </thead>
                     <tbody>
-                    {excludes.map((exclude ) => {
-                        return (
-                            <tr>
+                        {excludes.map((exclude, index) => {
+                            return (
+                                <tr key={"exclude" + index}>
 
-                                <td>
-                                    {exclude}
-                                </td>
-                            </tr>
-                        )
-                    })}
+                                    <td>
+                                        {exclude}
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </Table>
             ) : <div>No excludes added</div>}

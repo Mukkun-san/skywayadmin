@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import isEmpty from "is-empty";
 import Table from "../../table/table";
 
 const AddPricing = (props) => {
     let [pricing, setPricing] = useState([]);
+
+    useEffect(() => {
+        props.onChange(pricing)
+    }, [pricing])
 
     let [noOfGuest, setNoGuest] = useState("");
     let [stCost, setStCost] = useState("");
@@ -30,7 +34,7 @@ const AddPricing = (props) => {
             errors.push("Luxury cost not provided.");
         }
 
-        if (errors.length == 0) {
+        if (errors.length === 0) {
             return {
                 result: true,
                 errors: null,
@@ -154,32 +158,34 @@ const AddPricing = (props) => {
                     </div>
                     <div className="row mt-3">
                         <div className="col">
-                            {pricing.length !== 0 ? (
+                            {pricing.length ? (
                                 <Table>
                                     <thead>
-                                        <th>
-                                            Serial No
+                                        <tr>
+                                            <th>
+                                                Serial No
+                                            </th>
+                                            <th>
+                                                No of guest
                                    </th>
-                                        <th>
-                                            No of guest
+                                            <th>
+                                                Standard cost
                                    </th>
-                                        <th>
-                                            Standard cost
+                                            <th>
+                                                Deluxe cost
                                    </th>
-                                        <th>
-                                            Deluxe cost
+                                            <th>
+                                                Luxury cost
                                    </th>
-                                        <th>
-                                            Luxury cost
+                                            <th>
+                                                Actions
                                    </th>
-                                        <th>
-                                            Actions
-                                   </th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         {pricing.map((data, index) => {
                                             return (
-                                                <tr>
+                                                <tr key={'pricing' + index}>
                                                     <td>
                                                         {index}
                                                     </td>
@@ -196,20 +202,17 @@ const AddPricing = (props) => {
                                                         {data.luCost}
                                                     </td>
                                                     <td>
-                                                        <button onClick={() => {
-                                                            let temp = []
-
+                                                        <button type="button" onClick={() => {
+                                                            let res = []
                                                             for (let i = 0; i < pricing.length; i++) {
                                                                 if (i !== index) {
-                                                                    return pricing[i];
+                                                                    res.push(pricing[i])
                                                                 }
                                                             }
-
-                                                            setPricing(temp)
-
-                                                        }} className="btn btn-sm btn-danger mb-3">
+                                                            setPricing(res)
+                                                        }} className={'btn btn-danger'}>
                                                             Remove
-                                                   </button>
+                                            </button>
                                                     </td>
                                                 </tr>
                                             )

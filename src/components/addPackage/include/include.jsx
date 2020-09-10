@@ -1,13 +1,17 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from "../../table/table";
 
-let Include = () => {
+let Include = (props) => {
 
-    let [includes , setIncludes] = useState([])
-    let [includeTxt , setIncludeTxt] = useState('')
+    let [includes, setIncludes] = useState([])
+    let [includeTxt, setIncludeTxt] = useState('')
+
+    useEffect(() => {
+        props.onChange(includes)
+    }, [includes]);
 
     return (
-        <div className={'container'} style={{marginTop : '30px' , marginBottom : '30px'}}>
+        <div className={'container'} style={{ marginTop: '30px', marginBottom: '30px' }}>
             <h3>
                 Includes
             </h3>
@@ -17,9 +21,9 @@ let Include = () => {
                 </div>
                 <input onChange={(event) => {
                     setIncludeTxt(event.target.value)
-                }} type="text" className="form-control"/>
+                }} type="text" className="form-control" />
             </div>
-            <button onClick={() => {
+            <button type="button" onClick={() => {
                 setIncludes([
                     ...includes,
                     includeTxt
@@ -30,24 +34,24 @@ let Include = () => {
             {includes.length !== 0 ? (
                 <Table>
                     <thead>
-                    <tr>
+                        <tr>
 
-                        <th>
-                            Includes
+                            <th>
+                                Includes
                         </th>
-                    </tr>
+                        </tr>
                     </thead>
                     <tbody>
-                    {includes.map((include ) => {
-                        return (
-                            <tr>
+                        {includes.map((include, index) => {
+                            return (
+                                <tr key={"include" + index}>
 
-                                <td>
-                                    {include}
-                                </td>
-                            </tr>
-                        )
-                    })}
+                                    <td>
+                                        {include}
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </Table>
             ) : <div>No includes added</div>}

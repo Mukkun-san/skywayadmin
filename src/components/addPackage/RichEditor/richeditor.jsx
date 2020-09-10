@@ -18,7 +18,7 @@ class RichEditor extends React.Component {
                 rawContentState
             );
             this.setState({ editorState }, () => {
-                props.onChange(markup)
+                this.props.onChange(markup)
             })
         };
 

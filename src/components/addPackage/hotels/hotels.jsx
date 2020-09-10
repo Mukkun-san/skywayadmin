@@ -1,19 +1,23 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import Table from "../../table/table";
 
-let Hotels = () => {
+let Hotels = (props) => {
 
-    let [hotelsList , setHotelsList] = useState([])
+    let [hotelsList, setHotelsList] = useState([])
 
-    let [hotelsInfo , setHotelsInfo] = useState({
-        place : '',
-        standard : [],
-        deluxe : [],
-        luxury : []
+    useEffect(() => {
+        props.onChange(hotelsList)
+    }, [hotelsList])
+
+    let [hotelsInfo, setHotelsInfo] = useState({
+        place: '',
+        standard: [],
+        deluxe: [],
+        luxury: []
     })
 
     return (
-        <div style={{marginTop : '50px'}}>
+        <div style={{ marginTop: '50px' }}>
             <h2>Hotels</h2>
             <div className="form-group">
                 <div className="form-label">
@@ -24,7 +28,7 @@ let Hotels = () => {
                         ...hotelsInfo,
                         place: event.target.value
                     })
-                }} type="text" className="form-control"/>
+                }} type="text" className="form-control" />
             </div>
             <div className="form-group">
                 <div className="form-label">
@@ -35,7 +39,7 @@ let Hotels = () => {
                         ...hotelsInfo,
                         standard: event.target.value.split(',')
                     })
-                }}  type="text" className="form-control"/>
+                }} type="text" className="form-control" />
                 <small>Write hotels name separated by , </small>
             </div>
             <div className="form-group">
@@ -47,7 +51,7 @@ let Hotels = () => {
                         ...hotelsInfo,
                         deluxe: event.target.value.split(',')
                     })
-                }}  type="text" className="form-control"/>
+                }} type="text" className="form-control" />
                 <small>Write hotels name separated by , </small>
             </div>
             <div className="form-group">
@@ -59,10 +63,10 @@ let Hotels = () => {
                         ...hotelsInfo,
                         luxury: event.target.value.split(',')
                     })
-                }}  type="text"  className="form-control"/>
+                }} type="text" className="form-control" />
                 <small>Write hotels name separated by , </small>
             </div>
-            <button onClick={() => {
+            <button type="button" onClick={() => {
                 setHotelsList([
                     ...hotelsList,
                     hotelsInfo
@@ -84,37 +88,37 @@ let Hotels = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {hotelsList.map((hotel , index) => {
+                            {hotelsList.map((hotel, index) => {
                                 return (
-                                    <tr>
+                                    <tr key={'hotel' + index}>
                                         <td>{index + 1}</td>
                                         <td>{hotel.place}</td>
                                         <td>
-                                            {hotel.standard.map(standard => (
-                                                <React.Fragment>
-                                                    {standard} < br/>
+                                            {hotel.standard.map((standard, key) => (
+                                                <React.Fragment key={"standard" + key}>
+                                                    {standard} < br />
                                                 </React.Fragment>
                                             ))}
                                         </td>
                                         <td>
-                                            {hotel.deluxe.map(deluxe => (
-                                                <React.Fragment>
-                                                    {deluxe} < br/>
+                                            {hotel.deluxe.map((deluxe, key) => (
+                                                <React.Fragment key={'deluxe' + key}>
+                                                    {deluxe} < br />
                                                 </React.Fragment>
                                             ))}
                                         </td>
                                         <td>
-                                            {hotel.luxury.map(luxury => (
-                                                <React.Fragment>
-                                                    {luxury} < br/>
+                                            {hotel.luxury.map((luxury, key) => (
+                                                <React.Fragment key={'luxury' + key}>
+                                                    {luxury} < br />
                                                 </React.Fragment>
                                             ))}
                                         </td>
                                         <td>
-                                            <button onClick={() => {
+                                            <button type="button" onClick={() => {
                                                 let res = []
-                                                for(let i = 0 ; i < hotelsList.length ; i ++){
-                                                    if(i !== index){
+                                                for (let i = 0; i < hotelsList.length; i++) {
+                                                    if (i !== index) {
                                                         res.push(hotelsList[i])
                                                     }
                                                 }
