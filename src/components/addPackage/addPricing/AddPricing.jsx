@@ -85,13 +85,21 @@ const AddPricing = (props) => {
                         <div className="col">
                             <div className="form-group">
                                 <div className="form-label">No Of Guest</div>
-                                <input
+                                <select
                                     onChange={(event) =>
                                         setNoGuest(event.target.value)
                                     }
                                     type="text"
                                     className="form-control"
-                                />
+                                >
+                                    <option value="" selected disabled ></option>
+                                    <option value="2 Persons traveling together (Double Occupancy)">2 Persons traveling together (Double Occupancy)</option>
+                                    <option value="3 Persons traveling together (Triple Occupancy)">3 Persons traveling together (Triple Occupancy)	</option>
+                                    <option value="4 persons traveling together (2 Double Occupancy)">4 persons traveling together (2 Double Occupancy)	</option>
+                                    <option value="1 Person traveling together with 2 persons (1 Double and 1 Single Occupancy)">1 Person traveling together with 2 persons (1 Double and 1 Single Occupancy)</option>
+                                    <option value="Children between 6 and 12 years	">Children between 6 and 12 years</option>
+                                    <option value="Children below 6 years">Children below 6 years</option>
+                                </select>
 
                             </div>
                         </div>
