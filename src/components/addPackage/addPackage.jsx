@@ -49,7 +49,7 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
                 Data.append("images", img);
             });
             Data.append("packageDetails", JSON.stringify(packageDetails))
-            const newPkg = await axios.post('http://localhost:4545/api/v1/packages/addPackage', Data)
+            const newPkg = await axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', Data)
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result })
         }
