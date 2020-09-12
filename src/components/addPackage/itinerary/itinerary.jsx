@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import RichEditor from "../RichEditor/richeditor";
-import parseHTML from 'html-react-parser';
 
 let Itinerary = (props) => {
 
@@ -48,15 +46,12 @@ let Itinerary = (props) => {
                     <div className="form-group">
                         <div className="form-label">
                             Description
-                            <RichEditor
-                                onChange={(desc) => {
-                                    console.log(itineraryDetails)
-                                    setItineraryDetails({
-                                        ...itineraryDetails,
-                                        description: desc
-                                    })
-                                }}
-                            />
+                            <textarea onChange={(e) => {
+                                setItineraryDetails({
+                                    ...itineraryDetails,
+                                    description: e.target.value
+                                })
+                            }} class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
@@ -86,7 +81,7 @@ let Itinerary = (props) => {
                                             </div>
                                             <div>
                                                 Description:
-                                                {parseHTML(itinerary.description)}
+                                                {itinerary.description}
                                             </div>
                                         </div>
                                         <div className="col-2">
