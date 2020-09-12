@@ -43,15 +43,19 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
     async function submitDetails(e) {
         e.preventDefault();
         if (validatePackage(packageDetails, pictures).valid) {
-
+            console.log(packageDetails);
             let Data = new FormData();
             pictures.forEach(img => {
                 Data.append("images", img);
             });
             Data.append("packageDetails", JSON.stringify(packageDetails))
-            const newPkg = await axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', Data)
-            console.log(newPkg);
-            store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result })
+            try {
+                const newPkg = await axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', Data)
+                console.log(newPkg);
+                store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result })
+            } catch (error) {
+                console.log(error);
+            }
         }
         else {
             let errors = '';
