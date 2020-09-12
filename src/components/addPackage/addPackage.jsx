@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import SideSlide from "../sideslide/sideslide";
 import RichEditor from "./RichEditor/richeditor";
@@ -27,7 +27,7 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
         pricing: [],
         itinerary: [],
         hotels: [],
-        places: [],
+        place: '',
         duration: '',
         bannerImageUrl: '',
         overview: '',
@@ -59,7 +59,6 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
                 errors += err + '\n';
             });
             alert(errors);
-
         }
     }
 
@@ -81,7 +80,7 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
                 <Category onChange={(val) => { setPackageDetails({ ...packageDetails, category: val }) }} />
 
-                <Places onChange={(val) => { setPackageDetails({ ...packageDetails, places: val }) }} />
+                <Places onChange={(val) => { setPackageDetails({ ...packageDetails, place: val }) }} />
 
                 <div className="form-group">
                     <h4>Duration</h4>
