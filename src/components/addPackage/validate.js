@@ -7,7 +7,7 @@ function validatePackage(pkg, imgs) {
         errors.push('No Images Uploaded')
     }
 
-    if (isEmpty(pkg.places)) {
+    if (isEmpty(pkg.place)) {
         errors.push('Place is empty')
     }
     if (isEmpty(pkg.duration)) {
