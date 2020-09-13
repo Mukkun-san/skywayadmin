@@ -38,12 +38,13 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
         termsAndConditions: ''
     }
 
-    const [packageDetails, setPackageDetails] = useState(emptyPackageDetails)
+    let [packageDetails, setPackageDetails] = useState(emptyPackageDetails)
 
     const [images, setImages] = useState([])
     const [totalUpPercent, setTotalUpPercent] = useState(0)
     const [uploading, setUploading] = useState(false)
     let [imgUploadNb, setImgUploadNb] = useState(1)
+
 
     function uploadImages() {
 
@@ -68,21 +69,29 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
                 }, function (error) {
                     setUploading(false)
-                }, function () {
+                    reject({ error: "Error occurred while uploading images" })
+                }, async function () {
 
-                    uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                        console.log('File available at', downloadURL);
-                        setImgUploadNb(imgUploadNb++);
-                        ImgUrls.push(downloadURL)
-                        setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
-                    })
-
+                    let downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                    console.log('File available at', downloadURL);
+                    ImgUrls.push(downloadURL)
+                    setImgUploadNb(imgUploadNb++);
+                    setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
 
                     if (imgUploadNb === images.length) {
                         console.log('All images finished upload');
                         setUploading(false);
-                        console.log(ImgUrls);
-                        resolve(ImgUrls)
+                        let timer = setInterval(function () {
+                            var test = false;
+                            if (ImgUrls.length == images.length) {
+                                test = true
+                            }
+                            console.log(test);
+                            if (test) {
+                                resolve(ImgUrls)
+                                clearInterval(timer);
+                            }
+                        }, 750);
                     }
                 })
             })
@@ -92,27 +101,31 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
     }
 
-    async function submitPkg(images) {
-        setPackageDetails({ ...packageDetails, galleryImagesUrls: images });
+    async function submitPkg(imgs) {
         try {
-            const newPkg = await axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails)
+            const newPkg = await axios.post('https:///api/v1/packages/addPackage', packageDetails);
             console.log(newPkg);
-            store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result })
+            store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
         } catch (error) {
             console.log(error);
         }
+        console.log(packageDetails);
     }
 
     async function submitDetails() {
-        let images = await uploadImages();
-
-        submitPkg(images);
+        let imgs = await uploadImages();
+        if (imgs.error) {
+            alert(imgs.error)
+        } else {
+            packageDetails.galleryImagesUrls = imgs;
+            packageDetails.imageUrl = imgs[0];
+            submitPkg(imgs);
+        }
     }
 
     function validatePackageDetails(e) {
         e.preventDefault()
-        if (!validatePackage(packageDetails).result) {
-            console.log(packageDetails);
+        if (validatePackage(packageDetails).result && images.length) {
             submitDetails()
         }
         else {
@@ -120,10 +133,12 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
             validatePackage(packageDetails).errors.forEach(err => {
                 errors += err + '\n';
             });
+            if (!images.length) {
+                errors += 'No images uploaded!\n';
+            }
             alert(errors);
         }
     }
-
 
     return (
         <div ref={ref}>

@@ -9,14 +9,8 @@ function validatePackage(pkg) {
     if (isEmpty(pkg.duration)) {
         errors.push('Duration is empty')
     }
-    if (isEmpty(pkg.imageUrl)) {
-        errors.push('Image url is empty')
-    }
     if (isEmpty(pkg.overview)) {
-        errors.push('Image url is empty')
-    }
-    if (isEmpty(pkg.galleryImagesUrls)) {
-        errors.push('galleryImagesUrls is empty')
+        errors.push('Overview is empty')
     }
     if (isEmpty(pkg.pricing)) {
         errors.push('pricing is empty')
