@@ -101,15 +101,14 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
 
     }
 
-    async function submitPkg(imgs) {
+    async function submitPkg() {
         try {
-            const newPkg = await axios.post('https:///api/v1/packages/addPackage', packageDetails);
+            const newPkg = await axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails);
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
         } catch (error) {
             console.log(error);
         }
-        console.log(packageDetails);
     }
 
     async function submitDetails() {
