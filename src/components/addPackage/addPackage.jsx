@@ -142,7 +142,7 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
     return (
         <div ref={ref}>
             <SideSlide
-                show={true} hideFun={hideFun} title={title} onSubmit={(e) => {
+                show={show} hideFun={hideFun} title={title} onSubmit={(e) => {
                     validatePackageDetails(e);
                 }}>
 
