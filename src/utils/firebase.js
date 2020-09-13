@@ -1,12 +1,11 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import * as firebase from "firebase/app";
 
-// If you enabled Analytics in your project, add the Firebase SDK for Analytics
 import "firebase/analytics";
 
 // Add the Firebase products that you want to use
 import "firebase/auth";
-import "firebase/firestore";
+import "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyB_dSB9HyqOtB-uZ0ctkoEEqsyFSn6xRMg",
@@ -19,9 +18,9 @@ const firebaseConfig = {
     measurementId: "G-07Z4DDYWGT"
 };
 
-firebase.initializeApp(firebaseConfig);
+console.log(firebase.initializeApp(firebaseConfig))
 
 const fbAuth = firebase.auth();
-const fbStorageRef = firebase.storage().ref();
+const fbStorage = firebase.storage;
 
-export { fbAuth, fbStorageRef }
+export { fbAuth, fbStorage }

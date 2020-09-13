@@ -1,11 +1,7 @@
-const isEmpty = require('is-empty')
+import isEmpty from 'is-empty'
 
-function validatePackage(pkg, imgs) {
+function validatePackage(pkg) {
     let errors = []
-
-    if (isEmpty(imgs)) {
-        errors.push('No Images Uploaded')
-    }
 
     if (isEmpty(pkg.place)) {
         errors.push('Place is empty')
@@ -13,8 +9,14 @@ function validatePackage(pkg, imgs) {
     if (isEmpty(pkg.duration)) {
         errors.push('Duration is empty')
     }
+    if (isEmpty(pkg.imageUrl)) {
+        errors.push('Image url is empty')
+    }
     if (isEmpty(pkg.overview)) {
         errors.push('Image url is empty')
+    }
+    if (isEmpty(pkg.galleryImagesUrls)) {
+        errors.push('galleryImagesUrls is empty')
     }
     if (isEmpty(pkg.pricing)) {
         errors.push('pricing is empty')
@@ -31,24 +33,18 @@ function validatePackage(pkg, imgs) {
     if (isEmpty(pkg.description)) {
         errors.push('description is empty')
     }
-    if (isEmpty(pkg.packageName)) {
-        errors.push('packageName is empty')
-    }
-    if (isEmpty(pkg.termsAndConditions)) {
-        errors.push('termsAndConditions is empty')
-    }
 
     if (errors.length === 0) {
         return {
-            valid: true,
+            result: true,
             errors: null,
         }
     } else {
         return {
-            valid: false,
+            result: false,
             errors: errors,
         }
     }
 }
 
-module.exports = validatePackage
+export default validatePackage

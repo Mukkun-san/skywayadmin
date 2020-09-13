@@ -15,6 +15,8 @@ const Packages = ({ packageDetail, deletePackage }) => {
         setShowAddPackage(false);
     };
 
+
+
     return (
         <div style={{ width: "100%" }} className={style.packages}>
             <h2 style={{ float: "left" }}>Packages</h2>
