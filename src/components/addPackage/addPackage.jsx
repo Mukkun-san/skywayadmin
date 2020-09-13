@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import SideSlide from "../sideslide/sideslide";
 import RichEditor from "./RichEditor/richeditor";
@@ -16,7 +16,7 @@ import store from '../../store/index'
 import validatePackage from './packageValidator';
 import { fbStorage } from '../../utils/firebase';
 
-const AddPackage = ({ show, hideFun, title, addPackage }) => {
+const AddPackage = ({ show, hideRSideBar, title }) => {
     const ref = useRef(null);
 
     const emptyPackageDetails = {
@@ -39,87 +39,111 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
     }
 
     let [packageDetails, setPackageDetails] = useState(emptyPackageDetails)
-
-    const [images, setImages] = useState([])
-    const [totalUpPercent, setTotalUpPercent] = useState(0)
-    const [uploading, setUploading] = useState(false)
+    let [images, setImages] = useState([])
+    let [totalUpPercent, setTotalUpPercent] = useState(0)
+    let [ImgUpload, setImgUpload] = useState(false)
     let [imgUploadNb, setImgUploadNb] = useState(1)
+    let [addingPackage, setaddingPackage] = useState(false)
+    let [popperMsg, setpopperMsg] = useState(null)
 
+    useEffect(() => {
+        if (popperMsg) {
+            alert(popperMsg)
+        }
+        return () => {
+            //cleanup
+        }
+    }, [popperMsg])
+
+    function clearPackageDetails() {
+        setPackageDetails(emptyPackageDetails);
+    }
 
     function uploadImages() {
-
         return new Promise((resolve, reject) => {
             const randomstring = require("randomstring");
+
+            // Start Upload Tasks
             let uploadTasks = [];
             images.forEach((picture, i) => {
                 const EXT = picture.type.substr(picture.type.lastIndexOf("."), picture.type.length)
                 const PATH = 'Packages/Images/' + Date.now() + '_' + randomstring.generate() + EXT;
                 uploadTasks[i] = (fbStorage().ref().child(PATH).put(picture));
-                setUploading(true)
+                setImgUpload(true)
             })
 
+            // Add Event Listeners To Upload Tasks
             let ImgUrls = [];
             uploadTasks.forEach((uploadTask) => {
                 uploadTask.on('state_changed', function (snapshot) {
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     progress = Math.round(progress);
-
                     setTotalUpPercent(totalUpPercent + progress)
+                }, function (error) { // Upload Failed
+                    setImgUpload(false)
+                    setpopperMsg(error)
+                    reject({ error: "Error occurred while ImgUpload images", log: error })
+                }, function () { // Upload Success
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        console.log('File available at', downloadURL);
+                        ImgUrls.push(downloadURL)
+                        setImgUploadNb(imgUploadNb++);
+                        setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
 
+                        if (imgUploadNb === images.length) {
+                            setImgUpload(false);
+                            setaddingPackage(true);
+                            let timer = setInterval(function () {
+                                var test = false;
+                                if (ImgUrls.length === images.length) {
+                                    test = true
+                                }
+                                if (test) {
+                                    console.log('All images uploaded');
+                                    setImgUploadNb(1);
+                                    resolve(ImgUrls)
+                                    clearInterval(timer);
+                                }
+                            }, 250);
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                        reject(err);
+                    });;
 
-                }, function (error) {
-                    setUploading(false)
-                    reject({ error: "Error occurred while uploading images" })
-                }, async function () {
-
-                    let downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                    console.log('File available at', downloadURL);
-                    ImgUrls.push(downloadURL)
-                    setImgUploadNb(imgUploadNb++);
-                    setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
-
-                    if (imgUploadNb === images.length) {
-                        console.log('All images finished upload');
-                        setUploading(false);
-                        let timer = setInterval(function () {
-                            var test = false;
-                            if (ImgUrls.length == images.length) {
-                                test = true
-                            }
-                            console.log(test);
-                            if (test) {
-                                resolve(ImgUrls)
-                                clearInterval(timer);
-                            }
-                        }, 750);
-                    }
                 })
             })
         })
-
-
-
     }
 
-    async function submitPkg() {
-        try {
-            const newPkg = await axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails);
+    function submitPkg() {
+        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
-        } catch (error) {
-            console.log(error);
-        }
+            setaddingPackage(false);
+            hideRSideBar();
+            setTimeout(() => {
+                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully added.');
+                clearPackageDetails()
+            }, 250);
+        }).catch((err) => {
+            setaddingPackage(false);
+            console.log(err);
+        });
     }
 
-    async function submitDetails() {
-        let imgs = await uploadImages();
-        if (imgs.error) {
-            alert(imgs.error)
-        } else {
-            packageDetails.galleryImagesUrls = imgs;
-            packageDetails.imageUrl = imgs[0];
-            submitPkg(imgs);
-        }
+    function submitDetails() {
+        uploadImages().then((imgs) => {
+            if (imgs.error) {
+                alert(imgs.error)
+            } else {
+                packageDetails.galleryImagesUrls = imgs;
+                packageDetails.imageUrl = imgs[0];
+                submitPkg(imgs);
+            }
+        }).catch((err) => {
+            setpopperMsg(err)
+        });;
     }
 
     function validatePackageDetails(e) {
@@ -139,26 +163,39 @@ const AddPackage = ({ show, hideFun, title, addPackage }) => {
         }
     }
 
+    function loadingBar() {
+        let message = '';
+        let barColor = '';
+        if (ImgUpload) {
+            message = `Uploading Gallery Images... ( ${imgUploadNb} / ${images.length} )`;
+            barColor = "bg-info";
+        } else if (addingPackage) {
+            message = 'Adding Package "' + packageDetails.packageName + '" ...';
+            barColor = "bg-success";
+        }
+        return (
+            <div className="float-left" style={{ backgroundColor: "#FFF", display: "block", position: 'fixed', zIndex: 10000, width: ref.current ? ref.current.offsetWidth + 'px' : 0 }}>
+                < h6 className="text-center py-3 font-weight-regular" > {message}</h6 >
+                <div className="progress" style={{ height: "10px" }} >
+                    <div className={`progress-bar progress-bar-striped progress-bar-animated ${barColor}`} role="progressbar" style={{ width: "100%" }} aria-valuenow="100" aria-valuemin="100" aria-valuemax="100"></div>
+                </div>
+            </div >
+        )
+    }
+
     return (
         <div ref={ref}>
             <SideSlide
-                show={show} hideFun={hideFun} title={title} onSubmit={(e) => {
+                show={show} hideRSideBar={hideRSideBar} title={title} onSubmit={(e) => {
                     validatePackageDetails(e);
                 }}>
 
-                {uploading ?
+                {ImgUpload || addingPackage ?
                     <div style={{ display: "block", position: 'fixed', width: '100%', height: '100%', zIndex: 5000, backgroundColor: "#0003" }} >
                     </div> : ""
                 }
-                {uploading ?
-                    <div className="float-left" style={{ backgroundColor: "#FFF", display: "block", position: 'fixed', zIndex: 10000, width: ref.current ? ref.current.offsetWidth + 'px' : 0 }}>
-                        <h6 className="text-center py-3 font-weight-light">Uploading Images... ({imgUploadNb}/{images.length})
-                        {/* <small>{totalUpPercent + "%"}.</small> */}
-                        </h6>
-                        <div className="progress" style={{ height: "10px" }} >
-                            <div className="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style={{ width: "100%" }} aria-valuenow="100" aria-valuemin="100" aria-valuemax="100"></div>
-                        </div>
-                    </div> : ""
+                {ImgUpload || addingPackage ?
+                    loadingBar() : ""
                 }
                 <form
                     style={{ padding: "30px", height: "90%", overflow: 'scroll', backgroundColor: '#fafafa' }}

@@ -15,8 +15,6 @@ const Packages = ({ packageDetail, deletePackage }) => {
         setShowAddPackage(false);
     };
 
-
-
     return (
         <div style={{ width: "100%" }} className={style.packages}>
             <h2 style={{ float: "left" }}>Packages</h2>
@@ -77,7 +75,7 @@ const Packages = ({ packageDetail, deletePackage }) => {
             <AddPackage
                 show={showAddPackage}
                 title={"Add new Package"}
-                hideFun={hideAddPackage}
+                hideRSideBar={hideAddPackage}
             />
         </div >
     );

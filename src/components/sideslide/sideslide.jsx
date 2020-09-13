@@ -3,7 +3,7 @@ import style from "./sideslide.module.css";
 
 let closeImg = require("../../assets/close.svg");
 
-const SideSlide = ({ children, show, hideFun, title }) => {
+const SideSlide = ({ children, show, hideRSideBar, title }) => {
     return show === true ? (
         <div hidden={!show} className={style.sideslide}>
             <div className={style.content}>
@@ -12,7 +12,7 @@ const SideSlide = ({ children, show, hideFun, title }) => {
                         display: "flex",
                         padding: "30px 30px 10px 30px",
                         justifyContent: "space-between",
-                        boxShadow : '1px 1px 15px #ddd'
+                        boxShadow: '1px 1px 15px #ddd'
                     }}
                 >
                     <h2>{title}</h2>
@@ -22,15 +22,14 @@ const SideSlide = ({ children, show, hideFun, title }) => {
                         src={closeImg}
                         style={{ position: "relative", top: "10px" }}
                         alt="close btn"
-                        onClick={() => hideFun()}
+                        onClick={() => hideRSideBar()}
                     />
                 </div>
                 {children}
             </div>
         </div>
-    ) : (
-        <></>
-    );
+    ) : ''
+        ;
 };
 
 export default SideSlide;
