@@ -35,7 +35,6 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
         overview: '',
         packageName: '',
         description: '',
-        termsAndConditions: ''
     }
 
     let [packageDetails, setPackageDetails] = useState(emptyPackageDetails)
@@ -242,10 +241,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                     <Itinerary onChange={(val) => { setPackageDetails({ ...packageDetails, itinerary: val }) }} />
                     <Hotels onChange={(val) => { setPackageDetails({ ...packageDetails, hotels: val }) }} />
                     <br />
-                    <h2>Terms and condition</h2>
-                    <RichEditor
-                        onChange={(val) => { setPackageDetails({ ...packageDetails, termsAndConditions: val }) }} />
-                    <br />
+
                     <h2>Description</h2>
                     <RichEditor
                         onChange={(val) => { setPackageDetails({ ...packageDetails, description: val }) }}
