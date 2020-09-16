@@ -43,8 +43,8 @@ const Category = (props) => {
                 break;
             case "GROUP TOURS":
                 setSubCategories1([
-                    'India tours',
-                    'Foriegn tours'
+                    'India Tours',
+                    'Foreign Tours'
                 ]);
                 break;
             default:
