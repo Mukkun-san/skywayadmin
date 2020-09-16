@@ -37,7 +37,6 @@ const Category = (props) => {
                     'DAY TRIPS / EXCURSIONS',
                     'INDIAN CITY TOURS',
                     'MYSORE DASARA TOURS',
-                    'MYSORE DASARA GOLD CARD',
                     'TIRUPATI SPECIAL DARSHAN TOURS',
                     'WEEKEND GETAWAYS',
                 ]);
