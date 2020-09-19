@@ -143,9 +143,6 @@ const Category = (props) => {
                 <option value="HOLIDAYS" >HOLIDAYS</option>
                 <option value="EXPERIENCES">EXPERIENCES</option>
                 <option value="JUNGLE LODGES">JUNGLE LODGES</option>
-                <option value="TAXI HIRE">TAXI HIRE</option>
-                <option value="LUXURY TRAINS">LUXURY TRAINS</option>
-                <option value="FLIGHTS">FLIGHTS</option>
                 <option value="GROUP TOURS">GROUP TOURS</option>
             </select>
 
