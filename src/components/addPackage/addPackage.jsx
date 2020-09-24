@@ -4,6 +4,7 @@ import SideSlide from "../sideslide/sideslide";
 import RichEditor from "./RichEditor/richeditor";
 import ImageUploader from "react-images-upload";
 import AddPricing from "./addPricing/AddPricing";
+import JunglePricing from "./junglePricing/JunglePricing";
 import Include from "./include/include";
 import Exclude from "./exclude/exclude";
 import Itinerary from "./itinerary/itinerary";
@@ -46,13 +47,11 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     let [popperMsg, setpopperMsg] = useState(null)
 
     useEffect(() => {
-        if (popperMsg) {
-            alert(popperMsg)
-        }
+        console.log(packageDetails);
         return () => {
             //cleanup
         }
-    }, [popperMsg])
+    })
 
     function clearPackageDetails() {
         setPackageDetails(emptyPackageDetails);
@@ -234,8 +233,12 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                             maxFileSize={7242880}
                         />
                     </div>
-
-                    <AddPricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
+                    {packageDetails.category[0] === "JUNGLE LODGES"
+                        ?
+                        <JunglePricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
+                        :
+                        <AddPricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
+                    }
                     <Include onChange={(val) => { setPackageDetails({ ...packageDetails, includeExclude: { ...packageDetails.includeExclude, include: val } }) }} />
                     <Exclude onChange={(val) => { setPackageDetails({ ...packageDetails, includeExclude: { ...packageDetails.includeExclude, exclude: val } }) }} />
                     <Itinerary onChange={(val) => { setPackageDetails({ ...packageDetails, itinerary: val }) }} />

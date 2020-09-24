@@ -27,7 +27,7 @@ const Packages = ({ packageDetail, deletePackage }) => {
             >
                 Add Package
             </button>
-            {packageDetail ? (
+            {packageDetail && packageDetail.length ? (
                 <Table>
                     <thead>
                         <tr>
@@ -68,9 +68,9 @@ const Packages = ({ packageDetail, deletePackage }) => {
                         })}
                     </tbody>
                 </Table>
-            ) : (
-                    <Loading show={true}  ><div style={{ width: '100%', height: '400px' }}> </div> </Loading>
-                )
+            ) : packageDetail && !packageDetail.length ? <><h1 className="text-danger">No packages found</h1></> : (
+                <Loading show={true}  ><div style={{ width: '100%', height: '400px' }}> </div> </Loading>
+            )
             }
             <AddPackage
                 show={showAddPackage}
