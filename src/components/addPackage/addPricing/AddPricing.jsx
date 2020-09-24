@@ -22,16 +22,10 @@ const AddPricing = (props) => {
     let validatePricing = (pricing) => {
         let errors = [];
         if (isEmpty(pricing.noOfGuest)) {
-            errors.push("No of guest cannot be empty.");
+            errors.push("No of guest cannot be empty.\n");
         }
         if (isEmpty(pricing.stCost)) {
             errors.push("Standard cost not provided.");
-        }
-        if (isEmpty(pricing.deCost)) {
-            errors.push("Deluxe cost not provided.");
-        }
-        if (isEmpty(pricing.luCost)) {
-            errors.push("Luxury cost not provided.");
         }
 
         if (errors.length === 0) {
@@ -47,6 +41,36 @@ const AddPricing = (props) => {
         }
     };
 
+
+    let hasCost = (pricing, cost) => {
+        if (pricing && pricing.length) {
+            if (cost === "deluxe") {
+                let deluxe = []
+                pricing.forEach((price) => {
+                    deluxe.push(price.deCost);
+                })
+                if (deluxe.every((x) => !x)) {
+                    return false
+                } else {
+                    return true
+                }
+            } else if (cost === "luxury") {
+                let luxury = []
+                pricing.forEach((price) => {
+                    luxury.push(price.luCost);
+                })
+                if (luxury.every((x) => !x)) {
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
+        else {
+            return false
+        }
+    }
+
     let handleAddPricing = (event) => {
         event.preventDefault();
 
@@ -54,7 +78,7 @@ const AddPricing = (props) => {
 
         let validate = validatePricing(data)
 
-        if (validate.result == true) {
+        if (validate.result === true) {
 
             setPricing([
                 ...pricing,
@@ -69,6 +93,7 @@ const AddPricing = (props) => {
         }
     };
 
+
     return (
         <div>
 
@@ -77,7 +102,7 @@ const AddPricing = (props) => {
                     <h4>Add Pricing</h4>
                     {validationErrors.show ? (
                         <div className="alert alert-danger">
-                            {validationErrors.msg}
+                            <pre>{validationErrors.msg}</pre>
                             <button onClick={() => setShowValidationErrors({ show: false, msg: '' })} className="close"><span aria-hidden="true">&times;</span></button>
                         </div>
                     ) : null}
@@ -179,12 +204,11 @@ const AddPricing = (props) => {
                                             <th>
                                                 Standard cost
                                    </th>
-                                            <th>
-                                                Deluxe cost
-                                   </th>
-                                            <th>
-                                                Luxury cost
-                                   </th>
+                                            {hasCost(pricing, "deluxe") ?
+                                                <th> Deluxe cost</th> : null}
+
+                                            {hasCost(pricing, "luxury") ?
+                                                <th> Luxury cost</th> : null}
                                             <th>
                                                 Actions
                                    </th>
@@ -203,12 +227,15 @@ const AddPricing = (props) => {
                                                     <td>
                                                         {data.stCost}
                                                     </td>
-                                                    <td>
-                                                        {data.deCost}
-                                                    </td>
-                                                    <td>
-                                                        {data.luCost}
-                                                    </td>
+                                                    {hasCost(pricing, "deluxe") ?
+                                                        <td>
+                                                            {data.deCost}
+                                                        </td> : null}
+
+                                                    {hasCost(pricing, "luxury") ?
+                                                        <td>
+                                                            {data.luCost}
+                                                        </td> : null}
                                                     <td>
                                                         <button type="button" onClick={() => {
                                                             let res = []
