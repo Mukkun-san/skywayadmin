@@ -17,8 +17,9 @@ import store from '../../store/index'
 import validatePackage from './packageValidator';
 import { fbStorage } from '../../utils/firebase';
 
-const AddPackage = ({ show, hideRSideBar, title }) => {
+const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     const ref = useRef(null);
+
 
     const emptyPackageDetails = {
         category: [],
@@ -45,16 +46,25 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     let [imgUploadNb, setImgUploadNb] = useState(1)
     let [addingPackage, setaddingPackage] = useState(false)
     let [popperMsg, setpopperMsg] = useState(null)
+    let [skipImageUpload, setSkipImageUpload] = useState(false)
+    let [updateItinerary, setUpdateItinerary] = useState(false)
+    let [updatePricing, setUpdatePricing] = useState(false)
+    let [updateHotels, setUpdateHotels] = useState(false)
 
     useEffect(() => {
-        console.log(packageDetails);
+        if (packageDetail && (Object.keys(packageDetail)).length) {
+            setPackageDetails({ ...packageDetails, packageName: packageDetail.packageName })
+        }
+        console.log(packageDetail, packageDetails);
+
         return () => {
             //cleanup
         }
-    })
+    }, [packageDetail])
 
     function clearPackageDetails() {
         setPackageDetails(emptyPackageDetails);
+        setImages([]);
     }
 
     function uploadImages() {
@@ -115,13 +125,17 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     }
 
     function submitPkg() {
-        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        packageDetails.updateHotels = updateHotels;
+        packageDetails.updateItinerary = updateItinerary;
+        packageDetails.updatePricing = updatePricing;
+        axios.post('http://localhost:4545/api/v1/packages/updatePackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
+            store.dispatch({ type: "DELETE_PACKAGE", payload: packageDetail._id });
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             setaddingPackage(false);
             hideRSideBar();
             setTimeout(() => {
-                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully added.');
+                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully updated.');
                 clearPackageDetails()
             }, 250);
         }).catch((err) => {
@@ -131,33 +145,61 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     }
 
     function submitDetails() {
-        uploadImages().then((imgs) => {
-            if (imgs.error) {
-                alert(imgs.error)
-            } else {
-                packageDetails.galleryImagesUrls = imgs;
-                packageDetails.imageUrl = imgs[0];
-                submitPkg(imgs);
-            }
-        }).catch((err) => {
-            setpopperMsg(err)
-        });;
+        if (skipImageUpload) {
+            submitPkg();
+        } else {
+            uploadImages().then((imgs) => {
+                if (imgs.error) {
+                    alert(imgs.error)
+                } else {
+                    packageDetails.galleryImagesUrls = imgs;
+                    packageDetails.imageUrl = imgs[0];
+                    submitPkg();
+                }
+            }).catch((err) => {
+                setpopperMsg(err)
+            });;
+        }
+
     }
 
     function validatePackageDetails(e) {
-        e.preventDefault()
-        if (validatePackage(packageDetails).result && images.length) {
-            submitDetails()
+        if (packageDetails.itinerary && packageDetails.itinerary.length) {
+            updateItinerary = true;
         }
-        else {
+        if (packageDetails.pricing && packageDetails.pricing.length) {
+            updatePricing = true;
+        }
+        if (packageDetails.hotels && packageDetails.hotels.length) {
+            updateHotels = true;
+        }
+
+        if (!images.length) {
+            skipImageUpload = true
+            images = packageDetail.galleryImagesUrls
+        }
+
+        for (const i in packageDetails) {
+            packageDetails._id = packageDetail._id;
+            if (!packageDetails[i] || (packageDetails[i] && !packageDetails[i].length)) {
+                packageDetails[i] = packageDetail[i]
+            }
+        }
+
+        e.preventDefault()
+        if (!validatePackage(packageDetails).result || !images.length) {
             let errors = '';
-            validatePackage(packageDetails).errors.forEach(err => {
-                errors += err + '\n';
-            });
             if (!images.length) {
                 errors += 'No images uploaded!\n';
+            } else {
+                validatePackage(packageDetails).errors.forEach(err => {
+                    errors += err + '\n';
+                });
             }
             alert(errors);
+        }
+        else {
+            submitDetails()
         }
     }
 
@@ -196,6 +238,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                     loadingBar() : ""
                 }
                 <form
+                    className="bg-light"
                     style={{ padding: "30px", height: "90%", overflow: 'scroll', backgroundColor: '#fafafa' }}
                     onSubmit={validatePackageDetails}
                 >
@@ -277,4 +320,4 @@ function mapActions(dispatch) {
     }
 }
 
-export default connect(mapProp, mapActions)(AddPackage);
+export default connect(mapProp, mapActions)(UpdatePackage);

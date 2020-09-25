@@ -4,16 +4,24 @@ import { connect } from "react-redux";
 import Loading from "../../components/loading/loading";
 import Table from "../../components/table/table";
 import AddPackage from "../../components/addPackage/addPackage";
+import UpdatePackage from "../../components/updatePackage/updatePackage";
 import { deletePackage } from '../../store/actions'
 
 const Packages = ({ packageDetail, deletePackage }) => {
 
     //All states
     let [showAddPackage, setShowAddPackage] = useState(false);
+    const [showUpdatePackage, setShowUpdatePackage] = useState(false)
+    const [pkg, setPkg] = useState({})
 
     let hideAddPackage = () => {
         setShowAddPackage(false);
     };
+
+    let hideUpdatePackage = () => {
+        setShowUpdatePackage(false);
+    };
+
 
     return (
         <div style={{ width: "100%" }} className={style.packages}>
@@ -50,8 +58,10 @@ const Packages = ({ packageDetail, deletePackage }) => {
                                         <button
                                             style={{ marginRight: "20px" }}
                                             className={"btn btn-sm btn-warning"}
-                                            onClick={(e) => { deletePackage("e.target.value") }}
-
+                                            onClick={() => {
+                                                setPkg(data)
+                                                setShowUpdatePackage(true);
+                                            }}
                                         >
                                             Update
                                         </button>
@@ -76,6 +86,12 @@ const Packages = ({ packageDetail, deletePackage }) => {
                 show={showAddPackage}
                 title={"Add new Package"}
                 hideRSideBar={hideAddPackage}
+            />
+            <UpdatePackage
+                packageDetail={pkg}
+                show={showUpdatePackage}
+                title={"Update Package"}
+                hideRSideBar={hideUpdatePackage}
             />
         </div >
     );
