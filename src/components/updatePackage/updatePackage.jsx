@@ -43,9 +43,10 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     let [images, setImages] = useState([])
     let [totalUpPercent, setTotalUpPercent] = useState(0)
     let [ImgUpload, setImgUpload] = useState(false)
-    let [imgUploadNb, setImgUploadNb] = useState(1)
+    let [imgUploadNb, setImgUploadNb] = useState(0)
     let [addingPackage, setaddingPackage] = useState(false)
     let [popperMsg, setpopperMsg] = useState(null)
+
     let [skipImageUpload, setSkipImageUpload] = useState(false)
     let [updateItinerary, setUpdateItinerary] = useState(false)
     let [updatePricing, setUpdatePricing] = useState(false)
@@ -97,7 +98,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                         ImgUrls.push(downloadURL)
                         setImgUploadNb(imgUploadNb++);
                         setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
-
+                        console.log(ImgUrls, imgUploadNb, images);
                         if (imgUploadNb === images.length) {
                             setImgUpload(false);
                             setaddingPackage(true);
@@ -106,6 +107,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                                 if (ImgUrls.length === images.length) {
                                     test = true
                                 }
+                                console.log(test);
                                 if (test) {
                                     console.log('All images uploaded');
                                     setImgUploadNb(1);
@@ -132,7 +134,9 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
             console.log(newPkg);
             store.dispatch({ type: "DELETE_PACKAGE", payload: packageDetail._id });
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
-            setaddingPackage(false);
+            setTimeout(() => {
+                setaddingPackage(false);
+            }, 750);
             hideRSideBar();
             setTimeout(() => {
                 setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully updated.');
@@ -146,6 +150,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
 
     function submitDetails() {
         if (skipImageUpload) {
+            setaddingPackage(true);
             submitPkg();
         } else {
             uploadImages().then((imgs) => {
@@ -174,6 +179,16 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
             updateHotels = true;
         }
 
+
+        if (!packageDetails.includeExclude.include.length) {
+            packageDetails.includeExclude.include = packageDetail.includeExclude.include
+
+        }
+
+        if (!packageDetails.includeExclude.exclude.length) {
+            packageDetails.includeExclude.exclude = packageDetail.includeExclude.exclude
+        }
+
         if (!images.length) {
             skipImageUpload = true
             images = packageDetail.galleryImagesUrls
@@ -181,7 +196,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
 
         for (const i in packageDetails) {
             packageDetails._id = packageDetail._id;
-            if (!packageDetails[i] || (packageDetails[i] && !packageDetails[i].length)) {
+            if (!packageDetails[i] || (Array.isArray(packageDetails[i]) && !packageDetails[i].length)) {
                 packageDetails[i] = packageDetail[i]
             }
         }
@@ -210,7 +225,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
             message = `Uploading Gallery Images... ( ${imgUploadNb} / ${images.length} )`;
             barColor = "bg-info";
         } else if (addingPackage) {
-            message = 'Adding Package "' + packageDetails.packageName + '" ...';
+            message = 'Updating Package "' + packageDetails.packageName + '" ...';
             barColor = "bg-success";
         }
         return (

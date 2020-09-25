@@ -42,7 +42,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     let [images, setImages] = useState([])
     let [totalUpPercent, setTotalUpPercent] = useState(0)
     let [ImgUpload, setImgUpload] = useState(false)
-    let [imgUploadNb, setImgUploadNb] = useState(1)
+    let [imgUploadNb, setImgUploadNb] = useState(0)
     let [addingPackage, setaddingPackage] = useState(false)
     let [popperMsg, setpopperMsg] = useState(null)
 
