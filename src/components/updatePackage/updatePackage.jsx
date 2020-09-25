@@ -128,7 +128,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
         packageDetails.updateHotels = updateHotels;
         packageDetails.updateItinerary = updateItinerary;
         packageDetails.updatePricing = updatePricing;
-        axios.post('http://localhost:4545/api/v1/packages/updatePackage', packageDetails).then((newPkg) => {
+        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/updatePackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "DELETE_PACKAGE", payload: packageDetail._id });
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
