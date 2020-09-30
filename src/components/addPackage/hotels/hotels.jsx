@@ -7,7 +7,7 @@ let Hotels = (props) => {
 
     useEffect(() => {
         props.onChange(hotelsList)
-    }, [hotelsList])
+    }, [])
 
     let [hotelsInfo, setHotelsInfo] = useState({
         place: '',

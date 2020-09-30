@@ -8,7 +8,7 @@ let Exclude = (props) => {
 
     useEffect(() => {
         props.onChange(excludes);
-    }, [excludes])
+    }, [])
 
     return (
         <div className={'container'} style={{ marginTop: '30px' }}>

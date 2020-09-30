@@ -7,7 +7,7 @@ const AddPricing = (props) => {
 
     useEffect(() => {
         props.onChange(pricing)
-    }, [pricing])
+    }, [])
 
     let [noOfGuest, setNoGuest] = useState("");
     let [stCost, setStCost] = useState("");

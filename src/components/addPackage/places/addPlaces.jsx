@@ -6,7 +6,7 @@ const Places = (props) => {
 
     useEffect(() => {
         props.onChange(places)
-    }, [places])
+    }, [])
 
     return (
         <div>
