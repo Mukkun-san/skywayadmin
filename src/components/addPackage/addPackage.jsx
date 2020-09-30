@@ -98,7 +98,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                                 }
                                 if (test) {
                                     console.log('All images uploaded');
-                                    setImgUploadNb(1);
+                                    setImgUploadNb(0);
                                     resolve(ImgUrls)
                                     clearInterval(timer);
                                 }
@@ -115,7 +115,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     }
 
     function submitPkg() {
-        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             setaddingPackage(false);
@@ -131,13 +131,13 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     }
 
     function submitDetails() {
-        uploadImages().then((imgs) => {
-            if (imgs.error) {
-                alert(imgs.error)
+        uploadImages().then((imgURIs) => {
+            if (imgURIs.error) {
+                alert(imgURIs.error)
             } else {
-                packageDetails.galleryImagesUrls = imgs;
-                packageDetails.imageUrl = imgs[0];
-                submitPkg(imgs);
+                packageDetails.galleryImagesUrls = imgURIs;
+                packageDetails.imageUrl = imgURIs[0];
+                submitPkg();
             }
         }).catch((err) => {
             setpopperMsg(err)

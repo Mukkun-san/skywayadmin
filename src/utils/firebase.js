@@ -8,14 +8,14 @@ import "firebase/auth";
 import "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB_dSB9HyqOtB-uZ0ctkoEEqsyFSn6xRMg",
-    authDomain: "skyway-tour.firebaseapp.com",
-    databaseURL: "https://skyway-tour.firebaseio.com",
-    projectId: "skyway-tour",
-    storageBucket: "skyway-tour.appspot.com",
-    messagingSenderId: "610214435219",
-    appId: "1:610214435219:web:6a06974608f6d8c2feb066",
-    measurementId: "G-07Z4DDYWGT"
+    apiKey: "AIzaSyAmZzU2jWbgc8Pgt4OG2cw3gDm4VKuG1As",
+    authDomain: "proto-a231d.firebaseapp.com",
+    databaseURL: "https://proto-a231d.firebaseio.com",
+    projectId: "proto-a231d",
+    storageBucket: "proto-a231d.appspot.com",
+    messagingSenderId: "498060664758",
+    appId: "1:498060664758:web:031de1a474ac111769eb17",
+    measurementId: "G-VLVLZYBY0F"
 };
 
 console.log(firebase.initializeApp(firebaseConfig))
