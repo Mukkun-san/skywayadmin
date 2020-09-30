@@ -12,7 +12,7 @@ let Auth = ({ children, authState, setAuthState }) => {
 
     let verifyAuthToken = async (token) => {
         try {
-            let res = await fetch(`https://skyway-server.herokuapp.com/api/v1/auth/adminVerifyToken/${token}`)
+            let res = await fetch(`http://localhost:4545/api/v1/auth/adminVerifyToken/${token}`)
             let data = await res.json()
             console.log(data)
             return data.result;
