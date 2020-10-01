@@ -74,7 +74,7 @@ const AddPricing = (props) => {
     let handleAddPricing = (event) => {
         event.preventDefault();
 
-        let data = { noOfGuest, stCost, deCost, luCost }
+        let data = { name: noOfGuest, cost: { standard: stCost, deluxe: deCost, luxury: luCost } }
 
         let validate = validatePricing(data)
 

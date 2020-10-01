@@ -42,7 +42,11 @@ function validatePackage(pkg) {
     if (isEmpty(pkg.description)) {
         errors.push('DESCRIPTION is empty')
     }
-    if (isEmpty(pkg.seo.metaKeys) || isEmpty(pkg.seo.metaDesc) || isEmpty(pkg.seo.metaKeys) || isEmpty(pkg.seo.title) || isEmpty(pkg.seo.url)) {
+    if (isEmpty(pkg.seo.metaKeys) ||
+        isEmpty(pkg.seo.metaDesc) ||
+        isEmpty(pkg.seo.metaKeys) ||
+        //isEmpty(pkg.seo.title) ||
+        isEmpty(pkg.seo.url)) {
         errors.push('seo not completed')
     }
 

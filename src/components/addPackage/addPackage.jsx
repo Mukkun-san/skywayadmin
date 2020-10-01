@@ -192,11 +192,10 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
         }
         else {
             packageDetails.pricing.forEach(price => {
-                if (price.std !== 0) {
+                if (price.stCost !== 0) {
                     prices.push(price.stCost)
                 }
             });
-
         }
 
         let minPrice = Math.min(...prices)
@@ -283,8 +282,9 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
 
                     <div className="form-group">
                         <h4 className="form-label">Alt Attributes</h4>
-                        <p>Insert alt attributes separated by commas.</p>
-                        <input required={false} type="text" className={"form-control"} value={altAttrs}
+                        <img className="pl-5 pb-2 pr-1" src="https://img.icons8.com/emoji/20/000000/warning-emoji.png" alt="" />
+                        <p className="d-inline text-danger">Insert alt attributes below separated by a "/".</p>
+                        <input required={false} type="text" className={"mt-3 form-control"} value={altAttrs}
                             onChange={e => { setAltAttrs(e.target.value); }} />
                     </div>
 
