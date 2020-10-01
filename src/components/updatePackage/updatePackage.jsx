@@ -72,7 +72,6 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
         setImgUploadNb(0)
     }
 
-
     function uploadImages() {
         return new Promise((resolve, reject) => {
             const randomstring = require("randomstring");
@@ -131,10 +130,11 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     }
 
     function submitPkg() {
+        console.log("submitting package..", packageDetails);
         packageDetails.updateHotels = updateHotels;
         packageDetails.updateItinerary = updateItinerary;
         packageDetails.updatePricing = updatePricing;
-        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/updatePackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "DELETE_PACKAGE", payload: packageDetail._id });
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
@@ -143,8 +143,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
             }, 750);
             hideRSideBar();
             setTimeout(() => {
-                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully updated.');
-                clearPackageDetails()
+                window.location.reload()
             }, 250);
         }).catch((err) => {
             setaddingPackage(false);
@@ -207,7 +206,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
 
         e.preventDefault()
         packageDetails.seo = seo;
-        packageDetails.imagesAltAttrs = altAttrs;
+        packageDetails.imagesAltAttrs = Array.isArray(altAttrs) ? altAttrs : altAttrs.split("/");
         packageDetails.images = images;
         if (validatePackage(packageDetails).result) {
             submitDetails()

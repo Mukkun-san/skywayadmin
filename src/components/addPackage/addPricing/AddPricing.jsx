@@ -9,10 +9,10 @@ const AddPricing = (props) => {
         props.onChange(pricing)
     }, [pricing])
 
-    let [noOfGuest, setNoGuest] = useState("");
-    let [stCost, setStCost] = useState("");
-    let [deCost, setDeCost] = useState("");
-    let [luCost, setLuCost] = useState("");
+    let [name, setNoGuest] = useState("");
+    let [standard, setstandard] = useState("");
+    let [deluxe, setdeluxe] = useState("");
+    let [luxury, setluxury] = useState("");
 
     let [validationErrors, setShowValidationErrors] = useState({
         show: false,
@@ -21,10 +21,10 @@ const AddPricing = (props) => {
 
     let validatePricing = (pricing) => {
         let errors = [];
-        if (isEmpty(pricing.noOfGuest)) {
+        if (isEmpty(pricing.name)) {
             errors.push("No of guest cannot be empty.\n");
         }
-        if (isEmpty(pricing.stCost)) {
+        if (isEmpty(pricing.cost.standard)) {
             errors.push("Standard cost not provided.");
         }
 
@@ -47,7 +47,7 @@ const AddPricing = (props) => {
             if (cost === "deluxe") {
                 let deluxe = []
                 pricing.forEach((price) => {
-                    deluxe.push(price.deCost);
+                    deluxe.push(price.deluxe);
                 })
                 if (deluxe.every((x) => !x)) {
                     return false
@@ -57,7 +57,7 @@ const AddPricing = (props) => {
             } else if (cost === "luxury") {
                 let luxury = []
                 pricing.forEach((price) => {
-                    luxury.push(price.luCost);
+                    luxury.push(price.luxury);
                 })
                 if (luxury.every((x) => !x)) {
                     return false
@@ -74,7 +74,7 @@ const AddPricing = (props) => {
     let handleAddPricing = (event) => {
         event.preventDefault();
 
-        let data = { name: noOfGuest, cost: { standard: stCost, deluxe: deCost, luxury: luCost } }
+        let data = { name, cost: { standard, deluxe, luxury } }
 
         let validate = validatePricing(data)
 
@@ -135,7 +135,7 @@ const AddPricing = (props) => {
                                 <div className="form-label">Standard Cost</div>
                                 <input
                                     onChange={(event) =>
-                                        setStCost(event.target.value)
+                                        setstandard(event.target.value)
                                     }
                                     type="number"
                                     min={0}
@@ -151,7 +151,7 @@ const AddPricing = (props) => {
                                 <div className="form-label">Deluxe Cost</div>
                                 <input
                                     onChange={(event) =>
-                                        setDeCost(event.target.value)
+                                        setdeluxe(event.target.value)
                                     }
                                     type="number"
                                     min={0}
@@ -167,7 +167,7 @@ const AddPricing = (props) => {
                                 <div className="form-label">Luxury Cost</div>
                                 <input
                                     onChange={(event) =>
-                                        setLuCost(event.target.value)
+                                        setluxury(event.target.value)
                                     }
                                     type="number"
                                     min={0}
@@ -222,19 +222,19 @@ const AddPricing = (props) => {
                                                         {index}
                                                     </td>
                                                     <td>
-                                                        {data.noOfGuest}
+                                                        {data.name}
                                                     </td>
                                                     <td>
-                                                        {data.stCost}
+                                                        {data.cost.standard}
                                                     </td>
                                                     {hasCost(pricing, "deluxe") ?
                                                         <td>
-                                                            {data.deCost}
+                                                            {data.cost.deluxe}
                                                         </td> : null}
 
                                                     {hasCost(pricing, "luxury") ?
                                                         <td>
-                                                            {data.luCost}
+                                                            {data.cost.luxury}
                                                         </td> : null}
                                                     <td>
                                                         <button type="button" onClick={() => {
