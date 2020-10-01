@@ -8,7 +8,7 @@ let Itinerary = (props) => {
 
     useEffect(() => {
         props.onChange(itineraryList)
-    }, [itineraryList])
+    }, [itineraryList, itineraryDetails])
 
     return (
         <div className={'container'} style={{ marginTop: '50px' }}>

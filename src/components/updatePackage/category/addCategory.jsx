@@ -11,7 +11,7 @@ const Category = (props) => {
 
     useEffect(() => {
         props.onChange([category, subCategory1, subCategory2, subCategory3])
-    }, [])
+    }, [category, subCategory1, subCategory2, subCategory3])
 
     const renderSubCategories1 = (categ) => {
         setCategory(categ);

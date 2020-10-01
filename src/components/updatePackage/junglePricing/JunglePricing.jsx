@@ -7,7 +7,7 @@ const JunglePricing = (props) => {
 
     useEffect(() => {
         props.onChange(pricing)
-    }, [])
+    }, [pricing])
 
     let [singleOcc, setSingleOcc] = useState({});
     let [doubleOcc, setDoubleOcc] = useState({});

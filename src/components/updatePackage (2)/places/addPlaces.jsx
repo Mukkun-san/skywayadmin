@@ -4,17 +4,13 @@ const Places = (props) => {
     const [place, setPlace] = useState('')
 
     useEffect(() => {
-        setPlace(props.oldVal)
-    }, [props.oldVal])
-
-    useEffect(() => {
         props.onChange(place)
     }, [place])
 
     return (
         <div>
             <div className="py-2">
-                <h4>Places Covered</h4>
+                <h3>Places Covered</h3>
             </div>
             <input type="text" className={"form-control"} value={place} onChange={e => { setPlace(e.target.value); }} />
             <hr />

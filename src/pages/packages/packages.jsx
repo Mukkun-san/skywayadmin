@@ -78,7 +78,7 @@ const Packages = ({ packageDetail, deletePackage }) => {
                         })}
                     </tbody>
                 </Table>
-            ) : packageDetail && !packageDetail.length ? <><h1 className="text-danger">No packages found</h1></> : (
+            ) : packageDetail && !packageDetail.length ? <><h1 className="text-danger mt-5 pt-5">No packages found</h1></> : (
                 <Loading show={true}  ><div style={{ width: '100%', height: '400px' }}> </div> </Loading>
             )
             }

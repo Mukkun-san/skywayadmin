@@ -16,6 +16,8 @@ import axios from 'axios'
 import store from '../../store/index'
 import validatePackage from './packageValidator';
 import { fbStorage } from '../../utils/firebase';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddPackage = ({ show, hideRSideBar, title }) => {
     const ref = useRef(null);
@@ -45,16 +47,23 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     let [imgUploadNb, setImgUploadNb] = useState(0)
     let [addingPackage, setaddingPackage] = useState(false)
     let [popperMsg, setpopperMsg] = useState(null)
+    let [altAttrs, setAltAttrs] = useState("")
+    const [seo, setSEO] = useState({})
+
+    function imagesGalleryChange(pictures) {
+        setImages(pictures)
+    }
 
     useEffect(() => {
-        console.log(packageDetails);
-        return () => {
-            //cleanup
-        }
-    })
+        console.log(packageDetails, images);
+    }, [])
 
     function clearPackageDetails() {
-        setPackageDetails(emptyPackageDetails);
+        setPackageDetails(emptyPackageDetails)
+        setImages([])
+        setAltAttrs("")
+        setSEO({})
+        setImgUploadNb(0)
     }
 
     function uploadImages() {
@@ -115,7 +124,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     }
 
     function submitPkg() {
-        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             setaddingPackage(false);
@@ -146,19 +155,53 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
 
     function validatePackageDetails(e) {
         e.preventDefault()
+        packageDetails.seo = seo;
+        packageDetails.imagesAltAttrs = altAttrs.split("/");
+        packageDetails.priceStartsAt = pricingAt();
+        packageDetails.images = images;
         if (validatePackage(packageDetails).result && images.length) {
             submitDetails()
         }
         else {
             let errors = '';
-            validatePackage(packageDetails).errors.forEach(err => {
-                errors += err + '\n';
-            });
-            if (!images.length) {
-                errors += 'No images uploaded!\n';
+            if (validatePackage(packageDetails).errors) {
+                errors = validatePackage(packageDetails).errors[0]
             }
-            alert(errors);
+            toast.error(<pre style={{ color: "white" }}>{errors}</pre>, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            //alert(errors);
         }
+    }
+
+    function pricingAt() {
+        let prices = [];
+
+        if (packageDetails.category[0] === "JUNGLE LODGES") {
+            packageDetails.pricing.forEach(price => {
+                if (price.singleOcc.weekday !== 0) {
+                    prices.push(price.singleOcc.weekday)
+                }
+            });
+        }
+        else {
+            packageDetails.pricing.forEach(price => {
+                if (price.std !== 0) {
+                    prices.push(price.stCost)
+                }
+            });
+
+        }
+
+        let minPrice = Math.min(...prices)
+
+        return minPrice;
     }
 
     function loadingBar() {
@@ -195,6 +238,19 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                 {ImgUpload || addingPackage ?
                     loadingBar() : ""
                 }
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                {/* Same as */}
+                <ToastContainer />
                 <form
                     style={{ padding: "30px", height: "90%", overflow: 'scroll', backgroundColor: '#fafafa' }}
                     onSubmit={validatePackageDetails}
@@ -205,6 +261,8 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                         <input required={false} type="text" className={"form-control"} value={packageDetails.packageName}
                             onChange={e => { setPackageDetails({ ...packageDetails, packageName: e.target.value }); }} />
                     </div>
+
+                    {/* <ImagesAltAttributes nbimages={images.length} /> */}
 
                     <Category onChange={(val) => { setPackageDetails({ ...packageDetails, category: val }) }} />
 
@@ -224,11 +282,18 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                     </div>
 
                     <div className="form-group">
+                        <h4 className="form-label">Alt Attributes</h4>
+                        <p>Insert alt attributes separated by commas.</p>
+                        <input required={false} type="text" className={"form-control"} value={altAttrs}
+                            onChange={e => { setAltAttrs(e.target.value); }} />
+                    </div>
+
+                    <div className="form-group">
                         <h4 className="form-label">Gallery image upload</h4>
                         <ImageUploader
                             withPreview={true}
                             withIcon={true}
-                            onChange={(pictures) => { setImages(pictures) }}
+                            onChange={(pictures) => { imagesGalleryChange(pictures) }}
                             imgExtension={[".jpg", ".jpeg", ".png", ".gif"]}
                             maxFileSize={7242880}
                         />
@@ -249,6 +314,24 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                     <RichEditor
                         onChange={(val) => { setPackageDetails({ ...packageDetails, description: val }) }}
                     />
+
+                    <br />
+
+                    <div className="form-group">
+                        <h3>SEO</h3>
+                        <h6 className="form-label font-weight-normal">Meta Keywords</h6>
+                        <input required={false} type="text" className={"form-control mb-3"} value={seo.metaKeys}
+                            onChange={e => { setSEO({ ...seo, metaKeys: e.target.value }); }} />
+                        <h6 className="form-label font-weight-normal">Meta Description</h6>
+                        <input required={false} type="text" className={"form-control mb-3"} value={seo.metaDesc}
+                            onChange={e => { setSEO({ ...seo, metaDesc: e.target.value }); }} />
+                        {/* <h6 className="form-label font-weight-normal">Page Title</h6>
+                        <input required={false} type="text" className={"form-control mb-3"} value={seo.title}
+                            onChange={e => { setSEO({ ...seo, title: e.target.value }); }} /> */}
+                        <h6 className="form-label font-weight-normal">Package Code (URL)</h6>
+                        <input required={false} type="text" className={"form-control mb-3"} value={seo.url}
+                            onChange={e => { setSEO({ ...seo, url: e.target.value }); }} />
+                    </div>
 
                     <button className={'btn btn-primary mt-3'} type="submit">
                         Submit

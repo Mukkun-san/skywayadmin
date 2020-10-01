@@ -7,7 +7,7 @@ let Hotels = (props) => {
 
     useEffect(() => {
         props.onChange(hotelsList)
-    }, [])
+    }, [hotelsList])
 
     let [hotelsInfo, setHotelsInfo] = useState({
         place: '',
@@ -40,7 +40,7 @@ let Hotels = (props) => {
                         standard: event.target.value.split(',')
                     })
                 }} type="text" className="form-control" />
-                <small>Write hotels name separated by , </small>
+                {/* <small>Write hotels name separated by , </small> */}
             </div>
             <div className="form-group">
                 <div className="form-label">
@@ -52,7 +52,7 @@ let Hotels = (props) => {
                         deluxe: event.target.value.split(',')
                     })
                 }} type="text" className="form-control" />
-                <small>Write hotels name separated by , </small>
+                {/* <small>Write hotels name separated by , </small> */}
             </div>
             <div className="form-group">
                 <div className="form-label">
@@ -64,7 +64,7 @@ let Hotels = (props) => {
                         luxury: event.target.value.split(',')
                     })
                 }} type="text" className="form-control" />
-                <small>Write hotels name separated by , </small>
+                {/* <small>Write hotels name separated by , </small> */}
             </div>
             <button type="button" onClick={() => {
                 setHotelsList([

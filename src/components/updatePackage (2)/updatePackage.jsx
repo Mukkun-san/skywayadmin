@@ -16,11 +16,10 @@ import axios from 'axios'
 import store from '../../store/index'
 import validatePackage from './packageValidator';
 import { fbStorage } from '../../utils/firebase';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     const ref = useRef(null);
+
 
     const emptyPackageDetails = {
         category: [],
@@ -47,23 +46,22 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     let [imgUploadNb, setImgUploadNb] = useState(0)
     let [addingPackage, setaddingPackage] = useState(false)
     let [popperMsg, setpopperMsg] = useState(null)
-    let [altAttrs, setAltAttrs] = useState("")
-    const [seo, setSEO] = useState({})
+
+    let [skipImageUpload, setSkipImageUpload] = useState(false)
+    let [updateItinerary, setUpdateItinerary] = useState(false)
+    let [updatePricing, setUpdatePricing] = useState(false)
+    let [updateHotels, setUpdateHotels] = useState(false)
 
     useEffect(() => {
-        if (Object.keys(packageDetail).length) {
-            setPackageDetails(packageDetail)
-            setSEO(packageDetail.seo)
-            setAltAttrs(packageDetail.imagesAltAttrs)
+        console.log(packageDetail);
+        return () => {
+            //cleanup
         }
     }, [packageDetail])
 
     function clearPackageDetails() {
-        setPackageDetails(emptyPackageDetails)
-        setImages([])
-        setAltAttrs("")
-        setSEO({})
-        setImgUploadNb(0)
+        setPackageDetails(emptyPackageDetails);
+        setImages([]);
     }
 
     function uploadImages() {
@@ -96,7 +94,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                         ImgUrls.push(downloadURL)
                         setImgUploadNb(imgUploadNb++);
                         setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
-
+                        console.log(ImgUrls, imgUploadNb, images);
                         if (imgUploadNb === images.length) {
                             setImgUpload(false);
                             setaddingPackage(true);
@@ -105,9 +103,10 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                                 if (ImgUrls.length === images.length) {
                                     test = true
                                 }
+                                console.log(test);
                                 if (test) {
                                     console.log('All images uploaded');
-                                    setImgUploadNb(0);
+                                    setImgUploadNb(1);
                                     resolve(ImgUrls)
                                     clearInterval(timer);
                                 }
@@ -124,13 +123,19 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     }
 
     function submitPkg() {
-        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        packageDetails.updateHotels = updateHotels;
+        packageDetails.updateItinerary = updateItinerary;
+        packageDetails.updatePricing = updatePricing;
+        axios.post('http://localhost:4545/api/v1/packages/updatePackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
+            store.dispatch({ type: "DELETE_PACKAGE", payload: packageDetail._id });
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
-            setaddingPackage(false);
+            setTimeout(() => {
+                setaddingPackage(false);
+            }, 750);
             hideRSideBar();
             setTimeout(() => {
-                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully added.');
+                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully updated.');
                 clearPackageDetails()
             }, 250);
         }).catch((err) => {
@@ -140,42 +145,72 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
     }
 
     function submitDetails() {
-        uploadImages().then((imgURIs) => {
-            if (imgURIs.error) {
-                alert(imgURIs.error)
-            } else {
-                packageDetails.galleryImagesUrls = imgURIs;
-                packageDetails.imageUrl = imgURIs[0];
-                submitPkg();
-            }
-        }).catch((err) => {
-            setpopperMsg(err)
-        });;
+        if (skipImageUpload) {
+            setaddingPackage(true);
+            submitPkg();
+        } else {
+            uploadImages().then((imgs) => {
+                if (imgs.error) {
+                    alert(imgs.error)
+                } else {
+                    packageDetails.galleryImagesUrls = imgs;
+                    packageDetails.imageUrl = imgs[0];
+                    submitPkg();
+                }
+            }).catch((err) => {
+                setpopperMsg(err)
+            });;
+        }
+
     }
 
     function validatePackageDetails(e) {
+        if (packageDetails.itinerary && packageDetails.itinerary.length) {
+            updateItinerary = true;
+        }
+        if (packageDetails.pricing && packageDetails.pricing.length) {
+            updatePricing = true;
+        }
+        if (packageDetails.hotels && packageDetails.hotels.length) {
+            updateHotels = true;
+        }
+
+
+        if (!packageDetails.includeExclude.include.length) {
+            packageDetails.includeExclude.include = packageDetail.includeExclude.include
+
+        }
+
+        if (!packageDetails.includeExclude.exclude.length) {
+            packageDetails.includeExclude.exclude = packageDetail.includeExclude.exclude
+        }
+
+        if (!images.length) {
+            skipImageUpload = true
+            images = packageDetail.galleryImagesUrls
+        }
+
+        for (const i in packageDetails) {
+            packageDetails._id = packageDetail._id;
+            if (!packageDetails[i] || (Array.isArray(packageDetails[i]) && !packageDetails[i].length)) {
+                packageDetails[i] = packageDetail[i]
+            }
+        }
+
         e.preventDefault()
-        packageDetails.seo = seo;
-        packageDetails.imagesAltAttrs = altAttrs;
-        packageDetails.images = images;
-        if (validatePackage(packageDetails).result && images.length) {
-            submitDetails()
+        if (!validatePackage(packageDetails).result || !images.length) {
+            let errors = '';
+            if (!images.length) {
+                errors += 'No images uploaded!\n';
+            } else {
+                validatePackage(packageDetails).errors.forEach(err => {
+                    errors += err + '\n';
+                });
+            }
+            alert(errors);
         }
         else {
-            let errors = '';
-            if (validatePackage(packageDetails).errors) {
-                errors = validatePackage(packageDetails).errors[0]
-            }
-            toast.error(<pre style={{ color: "white" }}>{errors}</pre>, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            //alert(errors);
+            submitDetails()
         }
     }
 
@@ -186,7 +221,7 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
             message = `Uploading Gallery Images... ( ${imgUploadNb} / ${images.length} )`;
             barColor = "bg-info";
         } else if (addingPackage) {
-            message = 'Adding Package "' + packageDetails.packageName + '" ...';
+            message = 'Updating Package "' + packageDetails.packageName + '" ...';
             barColor = "bg-success";
         }
         return (
@@ -213,20 +248,8 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                 {ImgUpload || addingPackage ?
                     loadingBar() : ""
                 }
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-                {/* Same as */}
-                <ToastContainer />
                 <form
+                    className="bg-light"
                     style={{ padding: "30px", height: "90%", overflow: 'scroll', backgroundColor: '#fafafa' }}
                     onSubmit={validatePackageDetails}
                 >
@@ -237,11 +260,9 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                             onChange={e => { setPackageDetails({ ...packageDetails, packageName: e.target.value }); }} />
                     </div>
 
-                    {/* <ImagesAltAttributes nbimages={images.length} /> */}
+                    <Category onChange={(val) => { setPackageDetails({ ...packageDetails, category: val }) }} />
 
-                    <Category onChange={(val) => { setPackageDetails({ ...packageDetails, category: val }) }} categ={packageDetails.category} />
-
-                    <Places onChange={(val) => { setPackageDetails({ ...packageDetails, place: val }) }} oldVal={packageDetail.place} />
+                    <Places onChange={(val) => { setPackageDetails({ ...packageDetails, place: val }) }} />
 
                     <div className="form-group">
                         <h4>Duration</h4>
@@ -257,13 +278,6 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                     </div>
 
                     <div className="form-group">
-                        <h4 className="form-label">Alt Attributes</h4>
-                        <p>Insert alt attributes separated by commas.</p>
-                        <input required={false} type="text" className={"form-control"} value={altAttrs}
-                            onChange={e => { setAltAttrs(e.target.value); }} />
-                    </div>
-
-                    <div className="form-group">
                         <h4 className="form-label">Gallery image upload</h4>
                         <ImageUploader
                             withPreview={true}
@@ -275,9 +289,9 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                     </div>
                     {packageDetails.category[0] === "JUNGLE LODGES"
                         ?
-                        <JunglePricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} oldVal={packageDetails.pricing} />
+                        <JunglePricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
                         :
-                        <AddPricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} oldVal={packageDetails.pricing} />
+                        <AddPricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
                     }
                     <Include onChange={(val) => { setPackageDetails({ ...packageDetails, includeExclude: { ...packageDetails.includeExclude, include: val } }) }} />
                     <Exclude onChange={(val) => { setPackageDetails({ ...packageDetails, includeExclude: { ...packageDetails.includeExclude, exclude: val } }) }} />
@@ -289,24 +303,6 @@ const UpdatePackage = ({ packageDetail, show, hideRSideBar, title }) => {
                     <RichEditor
                         onChange={(val) => { setPackageDetails({ ...packageDetails, description: val }) }}
                     />
-
-                    <br />
-
-                    <div className="form-group">
-                        <h3>SEO</h3>
-                        <h6 className="form-label font-weight-normal">Meta Keywords</h6>
-                        <input required={false} type="text" className={"form-control mb-3"} value={seo.metaKeys}
-                            onChange={e => { setSEO({ ...seo, metaKeys: e.target.value }); }} />
-                        <h6 className="form-label font-weight-normal">Meta Description</h6>
-                        <input required={false} type="text" className={"form-control mb-3"} value={seo.metaDesc}
-                            onChange={e => { setSEO({ ...seo, metaDesc: e.target.value }); }} />
-                        <h6 className="form-label font-weight-normal">Page Title</h6>
-                        <input required={false} type="text" className={"form-control mb-3"} value={seo.title}
-                            onChange={e => { setSEO({ ...seo, title: e.target.value }); }} />
-                        <h6 className="form-label font-weight-normal">Package Code (URL)</h6>
-                        <input required={false} type="text" className={"form-control mb-3"} value={seo.url}
-                            onChange={e => { setSEO({ ...seo, url: e.target.value }); }} />
-                    </div>
 
                     <button className={'btn btn-primary mt-3'} type="submit">
                         Submit

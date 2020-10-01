@@ -8,7 +8,7 @@ let Include = (props) => {
 
     useEffect(() => {
         props.onChange(includes)
-    }, []);
+    }, [includes]);
 
     return (
         <div className={'container'} style={{ marginTop: '30px', marginBottom: '30px' }}>
