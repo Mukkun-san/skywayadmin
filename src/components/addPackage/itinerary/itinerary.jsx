@@ -51,7 +51,7 @@ let Itinerary = (props) => {
                                     ...itineraryDetails,
                                     description: e.target.value
                                 })
-                            }} class="form-control" rows="3"></textarea>
+                            }} className="form-control" rows="3"></textarea>
                         </div>
                     </div>
                 </div>

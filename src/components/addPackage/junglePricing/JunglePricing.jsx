@@ -12,7 +12,7 @@ const JunglePricing = (props) => {
     let [singleOcc, setSingleOcc] = useState({});
     let [doubleOcc, setDoubleOcc] = useState({});
 
-    const [pkgName, setPkgName] = useState("")
+    const [name, setname] = useState("")
 
     let [validationErrors, setShowValidationErrors] = useState({
         show: false,
@@ -21,19 +21,19 @@ const JunglePricing = (props) => {
 
     let validatePricing = (pricing) => {
         let errors = [];
-        if (isEmpty(pricing.pkgName)) {
+        if (isEmpty(pricing.name)) {
             errors.push("Package name not set.\n");
         }
-        if (isEmpty(pricing.singleOcc.weekday)) {
+        if (isEmpty(pricing.cost.singleOcc.weekday)) {
             errors.push("Weekday not set for single occupancy.\n");
         }
-        if (isEmpty(pricing.singleOcc.weekend)) {
+        if (isEmpty(pricing.cost.singleOcc.weekend)) {
             errors.push("Weekend not set for single occupancy.\n");
         }
-        if (isEmpty(pricing.doubleOcc.weekday)) {
+        if (isEmpty(pricing.cost.doubleOcc.weekday)) {
             errors.push("Weekday not set for double occupancy.\n");
         }
-        if (isEmpty(pricing.doubleOcc.weekend)) {
+        if (isEmpty(pricing.cost.doubleOcc.weekend)) {
             errors.push("Weekend not set for double occupancy.\n");
         }
 
@@ -53,7 +53,7 @@ const JunglePricing = (props) => {
     let handleAddPricing = (event) => {
         event.preventDefault();
 
-        let data = { pkgName, singleOcc, doubleOcc }
+        let data = { name, singleOcc, doubleOcc }
 
         let validate = validatePricing(data)
 
@@ -91,7 +91,7 @@ const JunglePricing = (props) => {
                                 <p className="form-label">Package Name</p>
                                 <input
                                     onChange={(event) =>
-                                        setPkgName(event.target.value)
+                                        setname(event.target.value)
                                     }
                                     type="text"
                                     className="form-control"
@@ -214,19 +214,19 @@ const JunglePricing = (props) => {
                                                         {index}
                                                     </td>
                                                     <td>
-                                                        {data.pkgName}
+                                                        {data.name}
                                                     </td>
                                                     <td>
-                                                        {data.singleOcc.weekday}
+                                                        {data.cost.singleOcc.weekday}
                                                     </td>
                                                     <td>
-                                                        {data.singleOcc.weekend}
+                                                        {data.cost.singleOcc.weekend}
                                                     </td>
                                                     <td>
-                                                        {data.doubleOcc.weekday}
+                                                        {data.cost.doubleOcc.weekday}
                                                     </td>
                                                     <td>
-                                                        {data.doubleOcc.weekend}
+                                                        {data.cost.doubleOcc.weekend}
                                                     </td>
                                                     <td>
                                                         <button type="button" onClick={() => {

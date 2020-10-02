@@ -21,9 +21,9 @@ function validatePackage(pkg) {
     if (isEmpty(pkg.imagesAltAttrs)) {
         errors.push('Image Alt Attributes is empty')
     }
-    if (isEmpty(pkg.images)) {
-        errors.push('No images were uploaded')
-    }
+    // if (isEmpty(pkg.images)) {
+    //     errors.push('No images were uploaded')
+    // }
     if (isEmpty(pkg.pricing)) {
         errors.push('PRICING is empty')
     }
@@ -44,8 +44,7 @@ function validatePackage(pkg) {
     }
     if (isEmpty(pkg.seo.metaKeys) ||
         isEmpty(pkg.seo.metaDesc) ||
-        isEmpty(pkg.seo.metaKeys) ||
-        //isEmpty(pkg.seo.title) ||
+        isEmpty(pkg.seo.metaKeys) || //isEmpty(pkg.seo.title) 
         isEmpty(pkg.seo.url)) {
         errors.push('seo not completed')
     }

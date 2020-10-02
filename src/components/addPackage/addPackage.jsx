@@ -16,8 +16,7 @@ import axios from 'axios'
 import store from '../../store/index'
 import validatePackage from './packageValidator';
 import { fbStorage } from '../../utils/firebase';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const AddPackage = ({ show, hideRSideBar, title }) => {
     const ref = useRef(null);
@@ -46,7 +45,6 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     let [ImgUpload, setImgUpload] = useState(false)
     let [imgUploadNb, setImgUploadNb] = useState(0)
     let [addingPackage, setaddingPackage] = useState(false)
-    let [popperMsg, setpopperMsg] = useState(null)
     let [altAttrs, setAltAttrs] = useState("")
     const [seo, setSEO] = useState({})
 
@@ -88,7 +86,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                     setTotalUpPercent(totalUpPercent + progress)
                 }, function (error) { // Upload Failed
                     setImgUpload(false)
-                    setpopperMsg(error)
+                    toastAlert(error, "error")
                     reject({ error: "Error occurred while ImgUpload images", log: error })
                 }, function () { // Upload Success
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
@@ -127,12 +125,12 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
         axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
-            setaddingPackage(false);
-            hideRSideBar();
             setTimeout(() => {
-                setpopperMsg('Package "' + newPkg.data.result.packageName + '" was successfully added.');
+                setaddingPackage(false);
+                hideRSideBar();
+                toastAlert(<p className="m-3">Package "{newPkg.data.result.packageName}" was successfully added.'</p>, "success")
                 clearPackageDetails()
-            }, 250);
+            }, 1000);
         }).catch((err) => {
             setaddingPackage(false);
             console.log(err);
@@ -142,14 +140,14 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     function submitDetails() {
         uploadImages().then((imgURIs) => {
             if (imgURIs.error) {
-                alert(imgURIs.error)
+                toastAlert(imgURIs.error, 'error')
             } else {
                 packageDetails.galleryImagesUrls = imgURIs;
                 packageDetails.imageUrl = imgURIs[0];
                 submitPkg();
             }
         }).catch((err) => {
-            setpopperMsg(err)
+            toastAlert(err, "error")
         });;
     }
 
@@ -167,16 +165,8 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
             if (validatePackage(packageDetails).errors) {
                 errors = validatePackage(packageDetails).errors[0]
             }
-            toast.error(<pre style={{ color: "white" }}>{errors}</pre>, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            //alert(errors);
+            toastAlert(<pre style={{ color: "white" }}>{errors}</pre>, "error")
+
         }
     }
 
@@ -185,14 +175,14 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
 
         if (packageDetails.category[0] === "JUNGLE LODGES") {
             packageDetails.pricing.forEach(price => {
-                if (price.singleOcc.weekday !== 0) {
-                    prices.push(price.singleOcc.weekday)
+                if (price.cost.singleOcc.weekday !== 0) {
+                    prices.push(price.cost.singleOcc.weekday)
                 }
             });
         }
         else {
             packageDetails.pricing.forEach(price => {
-                if (price.cost.standard !== 0) {
+                if (price.name.trim().toLowerCase() !== "Children between 6 and 12 years".toLowerCase() && price.name.trim().toLowerCase() !== "Children below 6 years".toLowerCase()) {
                     prices.push(price.cost.standard)
                 }
             });
@@ -222,7 +212,37 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
             </div >
         )
     }
+    function toastAlert(message, type) {
+        switch (type) {
+            case "error":
+                toast.error(message, {
+                    position: "top-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                break;
 
+            case "success":
+                toast.success(message, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                break;
+
+            default:
+                break;
+        }
+
+    }
     return (
         <div ref={ref}>
             <SideSlide
@@ -237,19 +257,6 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                 {ImgUpload || addingPackage ?
                     loadingBar() : ""
                 }
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-                {/* Same as */}
-                <ToastContainer />
                 <form
                     style={{ padding: "30px", height: "90%", overflow: 'scroll', backgroundColor: '#fafafa' }}
                     onSubmit={validatePackageDetails}
@@ -339,8 +346,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
 
                     <br />
                     <br />
-                    <br />
-                    <br />
+
                 </form>
             </SideSlide >
         </div>);

@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react'
 
-let Itinerary = (props) => {
+let Itinerary = ({ onChange, oldVal }) => {
 
     const [itineraryList, setItineraryList] = useState([])
 
     const [itineraryDetails, setItineraryDetails] = useState({})
 
     useEffect(() => {
-        props.onChange(itineraryList)
+        onChange(itineraryList)
     }, [itineraryList])
+
+    useEffect(() => {
+        if (oldVal && !itineraryList.length) {
+            setItineraryList(oldVal)
+        }
+    }, [oldVal])
 
     return (
         <div className={'container'} style={{ marginTop: '50px' }}>
@@ -51,7 +57,7 @@ let Itinerary = (props) => {
                                     ...itineraryDetails,
                                     description: e.target.value
                                 })
-                            }} class="form-control" rows="3"></textarea>
+                            }} className="form-control" rows="3"></textarea>
                         </div>
                     </div>
                 </div>

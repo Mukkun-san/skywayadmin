@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Table from "../../table/table";
 
-let Include = (props) => {
+let Include = ({ onChange, oldVal }) => {
 
     let [includes, setIncludes] = useState([])
     let [includeTxt, setIncludeTxt] = useState('')
 
     useEffect(() => {
-        props.onChange(includes)
+        onChange(includes)
     }, [includes]);
+
+    useEffect(() => {
+        if (oldVal && !includes.length) {
+            setIncludes(oldVal)
+        }
+    }, [oldVal])
 
     return (
         <div className={'container'} style={{ marginTop: '30px', marginBottom: '30px' }}>

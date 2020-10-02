@@ -4,7 +4,7 @@ import 'draft-js/dist/Draft.css';
 import './richeditor.css'
 import draftToHtml from 'draftjs-to-html';
 
-const { Editor, EditorState, RichUtils, convertToRaw } = Draft;
+const { Editor, EditorState, RichUtils, convertToRaw, convertFromHTML, ContentState } = Draft;
 
 class RichEditor extends React.Component {
     constructor(props) {
@@ -61,8 +61,29 @@ class RichEditor extends React.Component {
         );
     }
 
+    componentDidMount() {
+        // Typical usage (don't forget to compare props):
+
+        const sampleMarkup = this.props.oldVal || "";
+
+        const blocksFromHTML = convertFromHTML(sampleMarkup);
+        const state = ContentState.createFromBlockArray(
+            blocksFromHTML.contentBlocks,
+            blocksFromHTML.entityMap,
+        );
+
+        this.setState({
+            editorState: EditorState.createWithContent(state),
+        })
+
+    }
+
     render() {
         const { editorState } = this.state;
+
+
+
+
 
         // If the user changes block type before entering any text, we can
         // either style the placeholder or hide it. Let's just hide it now.

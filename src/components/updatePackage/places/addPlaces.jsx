@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react'
 
-const Places = (props) => {
+const Places = ({ onChange, oldVal }) => {
     const [place, setPlace] = useState('')
 
     useEffect(() => {
-        setPlace(props.oldVal)
-    }, [props.oldVal])
+        onChange(place)
+    }, [place])
 
     useEffect(() => {
-        props.onChange(place)
-    }, [place])
+        if (oldVal && !place) {
+            setPlace(oldVal)
+        }
+        return () => {
+
+        }
+    }, [oldVal])
 
     return (
         <div>

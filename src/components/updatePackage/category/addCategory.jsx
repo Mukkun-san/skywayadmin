@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from "react";
 
-const Category = (props) => {
+const Category = ({ onChange, oldVal }) => {
     const [category, setCategory] = useState('')
     const [subCategory1, setSubCategory1] = useState('')
-    const [subCategories1, setSubCategories1] = useState(null)
     const [subCategory2, setSubCategory2] = useState('')
-    const [subCategories2, setSubCategories2] = useState(null)
     const [subCategory3, setSubCategory3] = useState('')
+    const [subCategories1, setSubCategories1] = useState(null)
+    const [subCategories2, setSubCategories2] = useState(null)
     const [subCategories3, setSubCategories3] = useState(null)
 
+    function noSelect() {
+        return (!category && !subCategory1 && !subCategory2 && !subCategory3)
+    }
     useEffect(() => {
-        props.onChange([category, subCategory1, subCategory2, subCategory3])
+        if (oldVal && noSelect) {
+            setCategory(oldVal[0])
+            renderSubCategories1(oldVal[0])
+            setSubCategory1(oldVal[1])
+            renderSubCategories2(oldVal[1])
+            setSubCategory2(oldVal[2])
+            renderSubCategories3(oldVal[2])
+            setSubCategory3(oldVal[3])
+            onChange([oldVal[0], oldVal[1], oldVal[2], oldVal[3]])
+        }
+    }, [oldVal])
+
+    useEffect(() => {
+        onChange([category, subCategory1, subCategory2, subCategory3])
     }, [category, subCategory1, subCategory2, subCategory3])
 
     const renderSubCategories1 = (categ) => {
@@ -137,7 +153,7 @@ const Category = (props) => {
         <div className="form-group">
             <h4>Category</h4>
             <select required={false} className="custom-select my-2" value={category}
-                onChange={e => { renderSubCategories1(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
+                onChange={e => { renderSubCategories1(e.target.value); onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                 <option value="" disabled
                 ></option>
                 <option value="HOLIDAYS" >HOLIDAYS</option>
@@ -148,7 +164,7 @@ const Category = (props) => {
 
             {subCategories1 ?
                 <select required={false} className="custom-select my-2" value={subCategory1}
-                    onChange={e => { renderSubCategories2(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
+                    onChange={e => { renderSubCategories2(e.target.value); onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                     <option value="" disabled></option>
                     {subCategories1.map((subCateg, i) =>
                         <option value={subCateg} key={"subcateg" + i}>{subCateg}</option>
@@ -159,7 +175,7 @@ const Category = (props) => {
 
             {subCategories2 ?
                 <select required={false} className="custom-select my-2" value={subCategory2}
-                    onChange={e => { renderSubCategories3(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
+                    onChange={e => { renderSubCategories3(e.target.value); onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                     <option value="" disabled></option>
                     {subCategories2.map((subCateg, i) =>
                         <option value={subCateg} key={"subCateg2" + i}>{subCateg}</option>
@@ -170,7 +186,7 @@ const Category = (props) => {
 
             {subCategories3 ?
                 <select required={false} className="custom-select my-2" value={subCategory3}
-                    onChange={e => { setSubCategory3(e.target.value); props.onChange([category, subCategory1, subCategory2, subCategory3]) }}>
+                    onChange={e => { setSubCategory3(e.target.value); onChange([category, subCategory1, subCategory2, subCategory3]) }}>
                     <option value="" disabled></option>
                     {subCategories3.map((subCateg, i) =>
                         <option value={subCateg} key={"subCateg3" + i}>{subCateg}</option>

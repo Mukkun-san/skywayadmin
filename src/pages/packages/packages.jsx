@@ -6,6 +6,8 @@ import Table from "../../components/table/table";
 import AddPackage from "../../components/addPackage/addPackage";
 import UpdatePackage from "../../components/updatePackage/updatePackage";
 import { deletePackage } from '../../store/actions'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Packages = ({ packageDetail, deletePackage }) => {
 
@@ -22,9 +24,20 @@ const Packages = ({ packageDetail, deletePackage }) => {
         setShowUpdatePackage(false);
     };
 
-
     return (
         <div style={{ width: "100%" }} className={style.packages}>
+            <ToastContainer
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            {/* Same as */}
+            <ToastContainer />
             <h2 style={{ float: "left" }}>Packages</h2>
             <button
                 onClick={() => {
@@ -88,7 +101,7 @@ const Packages = ({ packageDetail, deletePackage }) => {
                 hideRSideBar={hideAddPackage}
             />
             <UpdatePackage
-                packageDetail={pkg}
+                oldPkg={pkg}
                 show={showUpdatePackage}
                 title={"Update Package"}
                 hideRSideBar={hideUpdatePackage}

@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Table from "../../table/table";
 
-let Hotels = (props) => {
+let Hotels = ({ onChange, oldVal }) => {
 
-    let [hotelsList, setHotelsList] = useState([])
+    let [hotelsList, setHotelsList] = useState(oldVal || [])
 
     useEffect(() => {
-        props.onChange(hotelsList)
+        onChange(hotelsList)
     }, [hotelsList])
+
+    useEffect(() => {
+        if (oldVal && !hotelsList.length) {
+            setHotelsList(oldVal)
+        }
+    }, [oldVal])
 
     let [hotelsInfo, setHotelsInfo] = useState({
         place: '',

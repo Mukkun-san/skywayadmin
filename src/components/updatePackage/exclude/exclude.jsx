@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Table from "../../table/table";
 
-let Exclude = (props) => {
+let Exclude = ({ onChange, oldVal }) => {
 
     let [excludes, setExcludes] = useState([])
     let [excludeTxt, setExcludeTxt] = useState('')
 
     useEffect(() => {
-        props.onChange(excludes);
+        onChange(excludes);
     }, [excludes])
+
+    useEffect(() => {
+        if (oldVal && !excludes.length) {
+            setExcludes(oldVal)
+        }
+    }, [oldVal])
 
     return (
         <div className={'container'} style={{ marginTop: '30px' }}>
