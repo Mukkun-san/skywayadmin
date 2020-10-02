@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import isEmpty from "is-empty";
 import Table from "../../table/table";
 
-const AddPricing = (props) => {
+const AddPricing = ({ onChange, oldVal }) => {
     let [pricing, setPricing] = useState([]);
 
     useEffect(() => {
-        props.onChange(pricing)
+        onChange(pricing)
     }, [pricing])
+
+    useEffect(() => {
+        if (oldVal && !pricing.length) {
+            setPricing(oldVal)
+        }
+    }, [oldVal])
 
     let [name, setNoGuest] = useState("");
     let [standard, setstandard] = useState("");
@@ -43,6 +49,7 @@ const AddPricing = (props) => {
 
 
     let hasCost = (pricing, cost) => {
+        return true
         if (pricing && pricing.length) {
             if (cost === "deluxe") {
                 let deluxe = []
@@ -116,8 +123,9 @@ const AddPricing = (props) => {
                                     }
                                     type="text"
                                     className="form-control"
+                                    defaultValue=""
                                 >
-                                    <option value="" selected disabled ></option>
+                                    <option value="" disabled ></option>
                                     <option value="2 Persons traveling together (Double Occupancy)">2 Persons traveling together (Double Occupancy)</option>
                                     <option value="3 Persons traveling together (Triple Occupancy)">3 Persons traveling together (Triple Occupancy)	</option>
                                     <option value="4 persons traveling together (2 Double Occupancy)">4 persons traveling together (2 Double Occupancy)	</option>

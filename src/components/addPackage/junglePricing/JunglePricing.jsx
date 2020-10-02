@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import isEmpty from "is-empty";
 import Table from "../../table/table";
 
-const JunglePricing = (props) => {
+const JunglePricing = ({ onChange }) => {
     let [pricing, setPricing] = useState([]);
 
     useEffect(() => {
-        props.onChange(pricing)
+        onChange(pricing)
     }, [pricing])
 
     let [singleOcc, setSingleOcc] = useState({});
@@ -53,7 +53,7 @@ const JunglePricing = (props) => {
     let handleAddPricing = (event) => {
         event.preventDefault();
 
-        let data = { name, singleOcc, doubleOcc }
+        let data = { name, cost: { singleOcc, doubleOcc } }
 
         let validate = validatePricing(data)
 
@@ -95,6 +95,7 @@ const JunglePricing = (props) => {
                                     }
                                     type="text"
                                     className="form-control"
+                                    value={name}
                                 />
                             </div>
                         </div>

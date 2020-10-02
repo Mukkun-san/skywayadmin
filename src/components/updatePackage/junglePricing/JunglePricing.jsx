@@ -15,6 +15,7 @@ const JunglePricing = ({ onChange, oldVal }) => {
         }
     }, [oldVal])
 
+
     let [singleOcc, setSingleOcc] = useState({});
     let [doubleOcc, setDoubleOcc] = useState({});
 

@@ -22,6 +22,12 @@ let Hotels = ({ onChange, oldVal }) => {
         luxury: []
     })
 
+    if (!hotelsList.length) {
+        hotelsList = oldVal
+    }
+
+    console.log(oldVal)
+
     return (
         <div style={{ marginTop: '50px' }}>
             <h2>Hotels</h2>

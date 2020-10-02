@@ -274,6 +274,7 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
     if (oldPkg.imagesAltAttrs && !altAttrs) {
         setAltAttrs(oldPkg.imagesAltAttrs.join("/"))
     }
+    console.log(oldPkg);
     return (
         <div ref={ref}>
             <SideSlide
@@ -338,7 +339,7 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
                     </div>
                     {packageDetails.category[0] === "JUNGLE LODGES"
                         ?
-                        <JunglePricing onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
+                        <JunglePricing oldVal={oldPkg.pricing} onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
                         :
                         <AddPricing oldVal={oldPkg.pricing} onChange={(val) => { setPackageDetails({ ...packageDetails, pricing: val }) }} />
                     }
