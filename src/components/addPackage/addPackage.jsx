@@ -122,7 +122,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
     }
 
     function submitPkg() {
-        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             setTimeout(() => {

@@ -92,7 +92,7 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
 
             // Add Event Listeners To Upload Tasks
             let ImgUrls = [];
-            uploadTasks.forEach((uploadTask) => {
+            uploadTasks.forEach((uploadTask, index) => {
                 uploadTask.on('state_changed', function (snapshot) {
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     progress = Math.round(progress);
@@ -104,8 +104,8 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
                 }, function () { // Upload Success
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                         console.log('File available at', downloadURL);
-                        ImgUrls.push(downloadURL)
-                        setImgUploadNb(imgUploadNb++);
+                        ImgUrls[index] = downloadURL
+                        setImgUploadNb(imgUploadNb + 1);
                         setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
 
                         if (imgUploadNb === images.length) {
@@ -136,7 +136,7 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
 
     function submitPkg() {
         setaddingPackage(true);
-        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             store.dispatch({ type: "DELETE_PACKAGE", payload: oldPkg._id });
