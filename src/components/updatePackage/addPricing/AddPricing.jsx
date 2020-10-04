@@ -47,37 +47,6 @@ const AddPricing = ({ onChange, oldVal }) => {
         }
     };
 
-
-    let hasCost = (pricing, cost) => {
-        return true
-        if (pricing && pricing.length) {
-            if (cost === "deluxe") {
-                let deluxe = []
-                pricing.forEach((price) => {
-                    deluxe.push(price.deluxe);
-                })
-                if (deluxe.every((x) => !x)) {
-                    return false
-                } else {
-                    return true
-                }
-            } else if (cost === "luxury") {
-                let luxury = []
-                pricing.forEach((price) => {
-                    luxury.push(price.luxury);
-                })
-                if (luxury.every((x) => !x)) {
-                    return false
-                } else {
-                    return true
-                }
-            }
-        }
-        else {
-            return false
-        }
-    }
-
     let handleAddPricing = (event) => {
         event.preventDefault();
 
@@ -212,18 +181,16 @@ const AddPricing = ({ onChange, oldVal }) => {
                                             <th>
                                                 Standard cost
                                    </th>
-                                            {hasCost(pricing, "deluxe") ?
-                                                <th> Deluxe cost</th> : null}
+                                            <th> Deluxe cost</th>
 
-                                            {hasCost(pricing, "luxury") ?
-                                                <th> Luxury cost</th> : null}
+                                            <th> Luxury cost</th>
                                             <th>
                                                 Actions
                                    </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {pricing.map((data, index) => {
+                                        {pricing && pricing.length ? pricing.map((data, index) => {
                                             return (
                                                 <tr key={'pricing' + index}>
                                                     <td>
@@ -235,15 +202,12 @@ const AddPricing = ({ onChange, oldVal }) => {
                                                     <td>
                                                         {data.cost.standard}
                                                     </td>
-                                                    {hasCost(pricing, "deluxe") ?
-                                                        <td>
-                                                            {data.cost.deluxe}
-                                                        </td> : null}
-
-                                                    {hasCost(pricing, "luxury") ?
-                                                        <td>
-                                                            {data.cost.luxury}
-                                                        </td> : null}
+                                                    <td>
+                                                        {data.cost.deluxe}
+                                                    </td>
+                                                    <td>
+                                                        {data.cost.luxury}
+                                                    </td>
                                                     <td>
                                                         <button type="button" onClick={() => {
                                                             let res = []
@@ -259,7 +223,7 @@ const AddPricing = ({ onChange, oldVal }) => {
                                                     </td>
                                                 </tr>
                                             )
-                                        })}
+                                        }) : null}
                                     </tbody>
                                 </Table>
                             ) : (<div className={'mt-3'} style={{ width: '100%', padding: '10px', boxShadow: '1px 1px 15px #ddd' }}>No pricing has been added yet.</div>)}

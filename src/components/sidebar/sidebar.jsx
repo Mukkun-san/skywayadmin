@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 //Icons
 let homeIcon = require("../../assets/home.svg");
 let menuIcon = require("../../assets/box.svg");
+let emailIcon = require("../../assets/email.png");
 
 const Sidebar = () => {
     return (
@@ -12,7 +13,7 @@ const Sidebar = () => {
             <div className={style.sidebar}>
                 <div className={style.brand}>skyway admin</div>
                 <div className={style.tileContainer}>
-                   <NavLink to={'/admin'} activeClassName={style.active}>
+                    <NavLink to={'/admin'} activeClassName={style.active}>
                         <div className={style.tile}>
                             <img
                                 width={25}
@@ -22,16 +23,28 @@ const Sidebar = () => {
                             />
                             Home
                         </div>
-                   </NavLink>
+                    </NavLink>
                     <NavLink to={'/admin/packages'} activeClassName={style.active}>
-                    <div className={style.tile}>
-                        <img
-                            width={25}
-                            height={25}
-                            src={menuIcon}
-                            alt="home icon"
-                        />
+                        <div className={style.tile}>
+                            <img
+                                width={25}
+                                height={25}
+                                src={menuIcon}
+                                alt="home icon"
+                            />
                         Packages
+                    </div>
+                    </NavLink>
+                    <NavLink to={'/admin/emails'}>
+
+                        <div className={style.tile}>
+                            <img
+                                width={25}
+                                height={25}
+                                src={emailIcon}
+                                alt="home icon"
+                            />
+                            Mailing List
                     </div>
                     </NavLink>
                 </div>

@@ -4,13 +4,14 @@ import style from './styles/layout.module.css'
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Homepage from './homepage/homepage';
 import Packages from './packages/packages';
+import Emails from './emails/emails';
 import { connect } from 'react-redux';
 import { setPackageDetail } from '../store/actions'
 
 let DashboardLayout = ({ setPackageDetail }) => {
     let fetchPackagesData = async () => {
         try {
-            let res = await fetch('http://localhost:4545/api/v1/packages/getAllPackages')
+            let res = await fetch('https://skyway-server.herokuapp.com/api/v1/packages/getAllPackages')
             let data = await res.json()
             return data
         } catch (err) {
@@ -31,6 +32,7 @@ let DashboardLayout = ({ setPackageDetail }) => {
                 <Switch>
                     <Route exact path='/admin' component={Homepage} />
                     <Route exact path='/admin/packages' component={Packages} />
+                    <Route exact path='/admin/emails' component={Emails} />
                 </Switch>
             </BrowserRouter>
         </div>
