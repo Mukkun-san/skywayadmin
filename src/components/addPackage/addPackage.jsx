@@ -79,7 +79,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
 
             // Add Event Listeners To Upload Tasks
             let ImgUrls = [];
-            uploadTasks.forEach((uploadTask) => {
+            uploadTasks.forEach((uploadTask, index) => {
                 uploadTask.on('state_changed', function (snapshot) {
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     progress = Math.round(progress);
@@ -91,7 +91,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                 }, function () { // Upload Success
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                         console.log('File available at', downloadURL);
-                        ImgUrls.push(downloadURL)
+                        ImgUrls[index] = downloadURL
                         setImgUploadNb(imgUploadNb++);
                         setPackageDetails({ ...packageDetails, galleryImagesUrls: ImgUrls })
 
