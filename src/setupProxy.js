@@ -10,7 +10,7 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'https://skyway-server.herokuapp.com/',
+      target: 'https://skyway-server.herokuapp.com//',
       changeOrigin: true,
     })
   );

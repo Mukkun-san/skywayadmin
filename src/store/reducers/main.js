@@ -28,7 +28,7 @@ let main = (state = intitialState, action) => {
             }
 
         case DELETE_PACKAGE:
-            fetch('https://skyway-server.herokuapp.com/api/v1/packages/removePackage/' + action.payload, {
+            fetch('https://skyway-server.herokuapp.com//api/v1/packages/removePackage/' + action.payload, {
                 method: 'DELETE',
             }).then(response => response)
                 .then((res) => { console.log(res) })

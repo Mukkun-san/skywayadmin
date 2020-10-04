@@ -6,13 +6,11 @@ import RichEditor from "./RichEditor/richeditor";
 const Emails = () => {
 
     const [emails, setEmails] = useState([])
-    const [mailContent, setMailContent] = useState("")
-    const [bulkmails, setBulkmails] = useState("")
+    const [range, setRange] = useState({ from: 1, to: 10 })
 
     useEffect(() => {
-        axios.get('https://skyway-server.herokuapp.com/api/v1/email/getAll').then((result) => {
+        axios.get('https://skyway-server.herokuapp.com//api/v1/email/getAll').then((result) => {
             setEmails(result.data.emails)
-            setBulkmails(result.data.emails.map((x, i) => { return x.email }))
             console.log(result);
         }).catch((err) => {
             console.log(err);
@@ -20,7 +18,25 @@ const Emails = () => {
     }, [])
 
     function mailsToClipboard() {
-
+        if (range.from > range.to) {
+            alert(`Invalid range: "from" value (${range.from}) can't be higher than "to" value (${range.to})`)
+        } else if ((range.to - range.from) > 50) {
+            alert("Invalid range: You can only select 100 emails at a time!")
+        } else {
+            let from = range.from
+            let to = range.to
+            let result = emails.map((x, i) => {
+                if (i + 1 === from && from <= to) {
+                    from++
+                    return x.email
+                } else {
+                    return null
+                }
+            });
+            console.log(document.getElementById("txtarea").textContent = result.filter(x => x).join(','))
+            document.getElementById("txtarea").select();
+            document.execCommand("copy");
+        }
     }
 
     return (
@@ -28,11 +44,12 @@ const Emails = () => {
             <h1 className="mb-3" >Mailing List</h1>
             {emails && emails.length ?
                 <div>
-                    <button className="btn btn-block btn-lg btn-info mx-auto d-inline" style={{ width: 'auto' }} onClick={() => { mailsToClipboard() }}>Copy All Emails to Clipboard</button>
-
-                    {/* From:<input type="number" style={{ width: '10rem' }} className="d-inline form-control" />
-                    To:<input type="number" style={{ width: '10rem' }} className="d-inline form-control" />
-                    <textarea className="form-control" value={bulkmails}></textarea> */}
+                    <div className="col text-center">
+                        <b>From:</b><input min={1} max={100000} type="number" style={{ width: '5rem' }} className="d-inline form-control mr-3" value={range.from} onChange={e => { setRange({ ...range, from: e.target.value }) }} />
+                        <b>To:</b><input min={1} max={100000} type="number" style={{ width: '5rem' }} className="d-inline form-control" value={range.to} onChange={e => { setRange({ ...range, to: e.target.value }) }} />
+                        <button className="mx-3 btn btn-block btn-info d-inline mr-3" style={{ width: 'auto' }} onClick={() => { mailsToClipboard() }}>Copy to Clipboard</button>
+                    </div>
+                    <textarea id='txtarea' className="form-control" style={{ position: "fixed", top: "1000vh" }}></textarea>
                     <br />
                     <Table>
                         <thead>
@@ -57,14 +74,10 @@ const Emails = () => {
 
                         </tbody>
                     </Table>
-                    <RichEditor
+                    {/* <RichEditor
                         onChange={(val) => { setMailContent(val) }}
-                    />
-                    <div>
-                        {
-                            mailContent
-                        }
-                    </div>
+                    /> */}
+
                 </div>
                 : <h3 className="danger"> No emails Subscribed yet!</h3>
             }

@@ -27,7 +27,7 @@ let Login = ({ authState, setAuthState }) => {
                 password: password,
             };
             let res = await fetch(
-                "https://skyway-server.herokuapp.com/api/v1/auth/adminAuth",
+                "https://skyway-server.herokuapp.com//api/v1/auth/adminAuth",
                 {
                     method: "POST",
                     body: JSON.stringify(requiredData),
