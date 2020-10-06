@@ -68,8 +68,6 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
         setImages(pictures)
     }
 
-    console.log(packageDetails.seo);
-
     function clearPackageDetails() {
         setPackageDetails(emptyPackageDetails)
         setImages([])
@@ -136,7 +134,7 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
 
     function submitPkg() {
         setaddingPackage(true);
-        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             store.dispatch({ type: "DELETE_PACKAGE", payload: oldPkg._id });
@@ -274,7 +272,6 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
     if (oldPkg.imagesAltAttrs && !altAttrs) {
         setAltAttrs(oldPkg.imagesAltAttrs.join("/"))
     }
-    console.log(oldPkg);
     return (
         <div ref={ref}>
             <SideSlide

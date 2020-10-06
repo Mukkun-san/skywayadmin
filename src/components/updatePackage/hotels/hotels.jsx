@@ -3,7 +3,7 @@ import Table from "../../table/table";
 
 let Hotels = ({ onChange, oldVal }) => {
 
-    let [hotelsList, setHotelsList] = useState(oldVal || [])
+    let [hotelsList, setHotelsList] = useState([])
 
     useEffect(() => {
         onChange(hotelsList)
@@ -13,7 +13,7 @@ let Hotels = ({ onChange, oldVal }) => {
         if (oldVal && !hotelsList.length) {
             setHotelsList(oldVal)
         }
-    }, [oldVal])
+    }, [])
 
     let [hotelsInfo, setHotelsInfo] = useState({
         place: '',
@@ -25,8 +25,6 @@ let Hotels = ({ onChange, oldVal }) => {
     if (!hotelsList.length) {
         hotelsList = oldVal
     }
-
-    console.log(oldVal)
 
     return (
         <div style={{ marginTop: '50px' }}>
@@ -86,7 +84,7 @@ let Hotels = ({ onChange, oldVal }) => {
             }} className={'btn btn-primary mb-3'}>
                 Add
             </button>
-            {hotelsList.length !== 0 ? (
+            {hotelsList && hotelsList.length !== 0 ? (
                 <div>
                     <Table>
                         <thead>
@@ -127,15 +125,18 @@ let Hotels = ({ onChange, oldVal }) => {
                                             ))}
                                         </td>
                                         <td>
-                                            <button type="button" onClick={() => {
-                                                let res = []
-                                                for (let i = 0; i < hotelsList.length; i++) {
-                                                    if (i !== index) {
-                                                        res.push(hotelsList[i])
+                                            <button type="button"
+                                                onClick={() => {
+                                                    let temp = []
+                                                    for (let k = 0; k < setHotelsList.length; k++) {
+                                                        console.log(temp, hotelsList, k, index);
+                                                        if (k !== index) {
+                                                            temp.push(hotelsList[k])
+                                                        }
                                                     }
-                                                }
-                                                setHotelsList(res)
-                                            }} className={'btn btn-danger'}>
+                                                    setHotelsList(temp)
+                                                }}
+                                                className={'btn btn-danger'}>
                                                 Remove
                                             </button>
                                         </td>

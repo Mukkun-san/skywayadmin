@@ -9,7 +9,7 @@ const Emails = () => {
     const [range, setRange] = useState({ from: 1, to: 10 })
 
     useEffect(() => {
-        axios.get('https://skyway-server.herokuapp.com/api/v1/email/getAll').then((result) => {
+        axios.get('http://localhost:4545/api/v1/email/getAll').then((result) => {
             setEmails(result.data.emails)
             console.log(result);
         }).catch((err) => {
