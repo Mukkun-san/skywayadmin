@@ -11,7 +11,7 @@ import { setPackageDetail } from '../store/actions'
 let DashboardLayout = ({ setPackageDetail }) => {
     let fetchPackagesData = async () => {
         try {
-            let res = await fetch('http://localhost:4545/api/v1/packages/getAllPackages')
+            let res = await fetch('https://skyway-server.herokuapp.com/api/v1/packages/getAllPackages')
             let data = await res.json()
             return data
         } catch (err) {
@@ -22,6 +22,7 @@ let DashboardLayout = ({ setPackageDetail }) => {
     useEffect(() => {
         fetchPackagesData().then(res => {
             setPackageDetail(res)
+            console.log(res)
         })
     }, [])
 

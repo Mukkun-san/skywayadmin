@@ -134,7 +134,7 @@ const UpdatePackage = ({ oldPkg, show, hideRSideBar, title }) => {
 
     function submitPkg() {
         setaddingPackage(true);
-        axios.post('http://localhost:4545/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
+        axios.post('https://skyway-server.herokuapp.com/api/v1/packages/addPackage', packageDetails).then((newPkg) => {
             console.log(newPkg);
             store.dispatch({ type: "ADD_PACKAGE", payload: newPkg.data.result });
             store.dispatch({ type: "DELETE_PACKAGE", payload: oldPkg._id });
