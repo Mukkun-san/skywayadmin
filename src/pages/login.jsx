@@ -18,6 +18,11 @@ let Login = ({ authState, setAuthState }) => {
         show: false,
         msg: "",
     });
+    
+    useEffect(() => {
+        emailId = "admin@mail.com";
+        password = "admin";
+    }, []);
 
     //Functions
     let loginAdmin = async () => {
@@ -84,7 +89,6 @@ let Login = ({ authState, setAuthState }) => {
                             <div className="form-group">
                                 <label>Email address</label>
                                 <input  
-                                    value="admin@mail.com"
                                     type="email"
                                     className="form-control"
                                     placeholder="Enter email"
@@ -96,7 +100,6 @@ let Login = ({ authState, setAuthState }) => {
                             <div className="form-group">
                                 <label>Password</label>
                                 <input
-                                    value="admin"
                                     type="password"
                                     className="form-control"
                                     placeholder="Password"
