@@ -72,7 +72,7 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
             let uploadTasks = [];
             images.forEach((picture, i) => {
                 const EXT = picture.type.substr(picture.type.lastIndexOf("."), picture.type.length)
-                const PATH = 'Packages/Images/' + Date.now() + '_' + randomstring.generate() + EXT;
+                const PATH = 'Skyway/Packages/Images/' + Date.now() + '_' + randomstring.generate() + EXT;
                 uploadTasks[i] = (fbStorage().ref().child(PATH).put(picture));
                 setImgUpload(true)
             })
