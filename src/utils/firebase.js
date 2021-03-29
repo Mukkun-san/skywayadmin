@@ -8,14 +8,13 @@ import "firebase/auth";
 import "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAmZzU2jWbgc8Pgt4OG2cw3gDm4VKuG1As",
-    authDomain: "proto-a231d.firebaseapp.com",
-    databaseURL: "https://proto-a231d.firebaseio.com",
-    projectId: "proto-a231d",
-    storageBucket: "proto-a231d.appspot.com",
-    messagingSenderId: "498060664758",
-    appId: "1:498060664758:web:031de1a474ac111769eb17",
-    measurementId: "G-VLVLZYBY0F"
+  apiKey: "AIzaSyAhgbHnwz-jfsYro5_XhgBWCernIiehpZI",
+  authDomain: "tests-d410c.firebaseapp.com",
+  projectId: "tests-d410c",
+  storageBucket: "tests-d410c.appspot.com",
+  messagingSenderId: "1033550190081",
+  appId: "1:1033550190081:web:a6cbc2ebb2c2b006af1200",
+  measurementId: "G-YY0QEQ6C92"
 };
 
 console.log(firebase.initializeApp(firebaseConfig))
