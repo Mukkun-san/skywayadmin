@@ -83,7 +83,8 @@ let Login = ({ authState, setAuthState }) => {
                             <Alert show={alert.show} msg={alert.msg} />
                             <div className="form-group">
                                 <label>Email address</label>
-                                <input
+                                <input  
+                                    value="admin@mail.com"
                                     type="email"
                                     className="form-control"
                                     placeholder="Enter email"
@@ -95,6 +96,7 @@ let Login = ({ authState, setAuthState }) => {
                             <div className="form-group">
                                 <label>Password</label>
                                 <input
+                                    value="admin"
                                     type="password"
                                     className="form-control"
                                     placeholder="Password"
