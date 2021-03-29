@@ -85,10 +85,12 @@ const AddPackage = ({ show, hideRSideBar, title }) => {
                     progress = Math.round(progress);
                     setTotalUpPercent(totalUpPercent + progress)
                 }, function (error) { // Upload Failed
+                    console.log("error",error);
                     setImgUpload(false)
                     toastAlert(error, "error")
                     reject({ error: "Error occurred while ImgUpload images", log: error })
                 }, function () { // Upload Success
+                    console.log("Upload Success");
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                         console.log('File available at', downloadURL);
                         ImgUrls[index] = downloadURL
