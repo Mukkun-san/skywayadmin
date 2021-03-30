@@ -84,6 +84,7 @@ let Login = ({ authState, setAuthState }) => {
                             <div className="form-group">
                                 <label>Email address</label>
                                 <input  
+                                    value={emailId}
                                     type="email"
                                     className="form-control"
                                     placeholder="Enter email"
@@ -95,6 +96,7 @@ let Login = ({ authState, setAuthState }) => {
                             <div className="form-group">
                                 <label>Password</label>
                                 <input
+                                    value={password}
                                     type="password"
                                     className="form-control"
                                     placeholder="Password"
