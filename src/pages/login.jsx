@@ -11,18 +11,13 @@ let loginImage = require("../assets/login_image.jpg");
 let Login = ({ authState, setAuthState }) => {
 
     //States
-    let [emailId, setEmailId] = useState("");
-    let [password, setPassword] = useState("");
+    let [emailId, setEmailId] = useState("admin@mail.com");
+    let [password, setPassword] = useState("adminadmin");
     let [rememberMe, setRememberMe] = useState("");
     let [alert, setAlert] = useState({
         show: false,
         msg: "",
     });
-    
-    useEffect(() => {
-        emailId = "admin@mail.com";
-        password = "admin";
-    }, []);
 
     //Functions
     let loginAdmin = async () => {
