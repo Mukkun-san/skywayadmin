@@ -30,6 +30,8 @@ let DashboardLayout = ({ setPackageDetail }) => {
         <div className={style.layout}>
             <BrowserRouter>
                 <Sidebar />
+                <br>
+                <h2 class="mx-auto"><a href="https://skywaytour.netlify.app/">Visit https://skywaytour.netlify.app</a></h2>
                 <Switch>
                     <Route exact path='/admin' component={Homepage} />
                     <Route exact path='/admin/packages' component={Packages} />
